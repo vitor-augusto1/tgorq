@@ -26,3 +26,10 @@ func (r Response) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
   return r, nil
 }
 
+func (r Response) View() string {
+	s := fmt.Sprintf(
+		"This is the response headers: %s\nThis is the response Body: %s",
+		r.resHeaders["Access-Control-Allow-Origin"], r.resBody,
+	)
+	return s
+}
