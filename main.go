@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -20,9 +19,8 @@ func main() {
 	}
 }
 
-type model struct {
-	url        textinput.Model
-	method     string
+
+type mainModel struct {
   request    Request
   response   Response
 }
