@@ -19,6 +19,13 @@ func main() {
 	}
 }
 
+type FocusedModel int
+const (
+  FocusUrl FocusedModel = 1 << iota
+  FocusMethod
+  FocusRequest
+  FocusResponse
+)
 
 type mainModel struct {
   method     *MethodModel
