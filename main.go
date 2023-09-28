@@ -75,8 +75,8 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m mainModel) View() string {
   s := fmt.Sprintf(
-    "URL: %s\nRequest type: %s\n%s\n%s\n%s",
-    m.url.View(), m.method, m.request.View(), m.response.View(),
+    "%s\n%s\n%s\n%s\n%s",
+    m.url.View(), m.method.View(), m.request.View(), m.response.View(),
     "Press `ctrl+c` or `q` to quit the program...",
   )
 	return s
