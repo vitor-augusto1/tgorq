@@ -36,3 +36,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
+func (m model) View() string {
+  s := fmt.Sprintf(
+    "URL: %s\nRequest type: %s\n%s\n%s\n%s",
+    m.url.View(), m.method, m.request.View(), m.response.View(),
+    "Press `ctrl+c` or `q` to quit the program...",
+  )
+	return s
+}
