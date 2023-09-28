@@ -19,3 +19,7 @@ func initialModel() model {
   }
 }
 
+func (m model) Init() tea.Cmd {
+	return nil
+}
+
