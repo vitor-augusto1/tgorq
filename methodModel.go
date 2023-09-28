@@ -53,3 +53,16 @@ func (mm MethodModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
   return mm, cmd
 }
 
+func (mm MethodModel) View() string {
+  lp := lipgloss.NewStyle().
+                BorderForeground(lipgloss.Color("36")).
+                BorderStyle(lipgloss.NormalBorder()).
+                Padding(1).Width(10)
+  var b strings.Builder
+  start, end := mm.paginator.GetSliceBounds(len(mm.methodType))
+  for _, item := range mm.methodType[start:end] {
+    b.WriteString("  " + string(item) + "\n")
+  }
+  b.WriteString(" " + mm.paginator.View())
+  return lp.Render(b.String())
+}
