@@ -8,6 +8,7 @@ github.com/aymanbagabas/go-osc52/v2
 ## explicit; go 1.17
 github.com/charmbracelet/bubbles/cursor
 github.com/charmbracelet/bubbles/key
+github.com/charmbracelet/bubbles/paginator
 github.com/charmbracelet/bubbles/runeutil
 github.com/charmbracelet/bubbles/textinput
 # github.com/charmbracelet/bubbletea v0.24.2
