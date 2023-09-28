@@ -33,3 +33,7 @@ func (u *Url) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
   return u, nil
 }
 
+func (u Url) View() string {
+  s := u.style.Render(u.url.View())
+  return s
+}
