@@ -24,3 +24,22 @@ type MethodModel struct {
   paginator paginator.Model
 }
 
+func InitialMethodModel() *MethodModel {
+  methodsSlice := []httpMethod{GET, POST, PUT, PATCH, DELETE}
+  newPaginator := paginator.New()
+  newPaginator.Type = paginator.Dots
+  newPaginator.SetTotalPages(len(methodsSlice))
+  newPaginator.ActiveDot = lipgloss.NewStyle().
+                                    Foreground(lipgloss.AdaptiveColor{
+                                               Light: "235", Dark: "252"}).
+                                    Render("•")
+	newPaginator.InactiveDot = lipgloss.NewStyle().
+                                      Foreground(lipgloss.AdaptiveColor{
+                                        Light: "250", Dark: "238"}).Render("•")
+  return &MethodModel{
+    methodType: methodsSlice,
+    chosenMethod: GET,
+    paginator: newPaginator,
+  }
+}
+
