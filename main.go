@@ -21,8 +21,11 @@ func main() {
 
 
 type mainModel struct {
+  method     *MethodModel
+	url        *Url
   request    Request
   response   Response
+  focusedModel FocusedModel
 }
 
 func initialModel() model {
