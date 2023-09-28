@@ -43,3 +43,7 @@ func InitialMethodModel() *MethodModel {
   }
 }
 
+func (mm MethodModel) Init() tea.Cmd {
+  return nil
+}
+
