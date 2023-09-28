@@ -28,15 +28,13 @@ type mainModel struct {
   focusedModel FocusedModel
 }
 
-func initialModel() model {
-	ti := textinput.New()
-	ti.Placeholder = "https://www.example.com/"
-	ti.Focus()
-  return model{
-    url: ti,
-    method: "GET",
+func initialModel() mainModel {
+  return mainModel{
+    method: InitialMethodModel(),
+    url: InitialUrlModel(),
     request: InitialRequestModel(),
     response: InitalResponseModel(),
+    focusedModel: FocusUrl,
   }
 }
 
