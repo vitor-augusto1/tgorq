@@ -45,11 +45,10 @@ func initialModel() mainModel {
   }
 }
 
-func (m model) Init() tea.Cmd {
+func (m mainModel) Init() tea.Cmd {
 	return nil
 }
 
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -60,9 +59,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 	m.url, cmd = m.url.Update(msg)
 	return m, cmd
+func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
-func (m model) View() string {
+func (m mainModel) View() string {
   s := fmt.Sprintf(
     "URL: %s\nRequest type: %s\n%s\n%s\n%s",
     m.url.View(), m.method, m.request.View(), m.response.View(),
