@@ -22,3 +22,7 @@ func (r Response) Init() tea.Cmd {
   return nil
 }
 
+func (r Response) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+  return r, nil
+}
+
