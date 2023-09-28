@@ -1,5 +1,21 @@
 package main
 
+import (
+	"fmt"
+	"os"
+
+	"github.com/charmbracelet/bubbles/textinput"
+	tea "github.com/charmbracelet/bubbletea"
+)
+
+func main() {
+	p := tea.NewProgram(initialModel(), tea.WithAltScreen(), tea.WithMouseCellMotion())
+	if _, err := p.Run(); err != nil {
+		fmt.Printf("Ain't no way, boy! %v", err)
+		os.Exit(1)
+	}
+}
+
 type model struct {
 	url        textinput.Model
 	method     string
