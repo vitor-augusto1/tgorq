@@ -59,6 +59,8 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
         return m, nil
       }
       return m, tea.Quit
+    case "ctrl+c":
+      return m, tea.Quit
 }
 
 func (m mainModel) View() string {
