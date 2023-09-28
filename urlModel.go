@@ -24,3 +24,7 @@ func InitialUrlModel() *Url {
   }
 }
 
+func (u Url) Init() tea.Cmd {
+  return nil
+}
+
