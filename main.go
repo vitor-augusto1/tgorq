@@ -49,17 +49,16 @@ func (m mainModel) Init() tea.Cmd {
 	return nil
 }
 
-	var cmd tea.Cmd
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		switch msg.String() {
-		case "ctrl+c", "q":
-			return m, tea.Quit
-		}
-	}
-	m.url, cmd = m.url.Update(msg)
-	return m, cmd
 func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+  switch msg := msg.(type) {
+  case tea.KeyMsg:
+    switch msg.String() {
+    case "q":
+      if m.focusedModel == FocusUrl {
+        m.url.url, _ = m.url.url.Update(msg)
+        return m, nil
+      }
+      return m, tea.Quit
 }
 
 func (m mainModel) View() string {
