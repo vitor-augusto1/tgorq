@@ -22,3 +22,7 @@ func InitialRequestModel() Request {
   }
 }
 
+func (r Request) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	return r, nil
+}
+
