@@ -28,3 +28,8 @@ func (u Url) Init() tea.Cmd {
   return nil
 }
 
+func (u *Url) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+  u.url, _ = u.url.Update(msg)
+  return u, nil
+}
+
