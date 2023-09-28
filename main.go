@@ -61,6 +61,12 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
       return m, tea.Quit
     case "ctrl+c":
       return m, tea.Quit
+    default:
+      m.url.url, _ = m.url.url.Update(msg)
+      return m, nil
+    }
+  }
+  return m, nil
 }
 
 func (m mainModel) View() string {
