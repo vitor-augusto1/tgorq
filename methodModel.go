@@ -47,7 +47,7 @@ func (mm MethodModel) Init() tea.Cmd {
   return nil
 }
 
-func (mm MethodModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (mm *MethodModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
   var cmd tea.Cmd
   mm.paginator, cmd = mm.paginator.Update(msg)
   return mm, cmd
