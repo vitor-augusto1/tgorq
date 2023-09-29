@@ -20,7 +20,7 @@ func InitialUrlModel() *Url {
     style: lipgloss.NewStyle().
                     BorderForeground(lipgloss.Color("36")).
                     BorderStyle(lipgloss.NormalBorder()).
-                    Padding(1).Width(80),
+                    Padding(1).Width(158),
   }
 }
 
