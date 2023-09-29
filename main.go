@@ -59,11 +59,15 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
         return m, nil
       }
       return m, tea.Quit
-    case "ctrl+c":
+    case tea.KeyCtrlC.String():
       return m, tea.Quit
-    case "ctrl+m":
+    // Focus on the URL model
+    case tea.KeyCtrlU.String():
+      m.focusedModel = FocusUrl
+      return m, nil
+    // Focus on the method model
+    case tea.KeyCtrlM.String():
       m.focusedModel = FocusMethod
-      m.method.paginator, _ = m.method.paginator.Update(msg)
       return m, nil
     default:
       m.url.url, _ = m.url.url.Update(msg)
