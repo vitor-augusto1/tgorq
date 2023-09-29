@@ -72,7 +72,23 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
       m.focusedModel = FocusMethod
       return m, nil
     default:
-      m.url.url, _ = m.url.url.Update(msg)
+      // Handling each focused model
+      switch m.focusedModel {
+      // Updating the URL
+      case FocusUrl:
+        m.url.url, _ = m.url.url.Update(msg)
+        return m, nil
+      case FocusMethod:
+        // Handling the paginator movement
+        switch msg.String() {
+        case tea.KeyLeft.String(), "h":
+          m.method.paginator.PrevPage()
+          return m, nil
+        case tea.KeyRight.String(), "l":
+          m.method.paginator.NextPage()
+          return m, nil
+        }
+      }
       return m, nil
     }
   }
