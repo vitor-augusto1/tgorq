@@ -52,7 +52,9 @@ func (m mainModel) Init() tea.Cmd {
 func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
   switch msg := msg.(type) {
   case tea.KeyMsg:
+    // Handling the msg being sent
     switch msg.String() {
+    // Quit the program if its not focus on the URL model
     case "q":
       if m.focusedModel == FocusUrl {
         m.url.url, _ = m.url.url.Update(msg)
