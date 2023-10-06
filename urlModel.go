@@ -1,9 +1,21 @@
 package main
 
 import (
+	"fmt"
+	"strings"
+
+	"github.com/charmbracelet/bubbles/paginator"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+)
+
+var (
+  paginatorStyle = lipgloss.
+                        NewStyle().
+                        Foreground(lipgloss.AdaptiveColor{
+                          Light: "235", Dark: "252",
+                        }).Render("•")
 )
 
 type Url struct {
@@ -21,6 +33,8 @@ func InitialUrlModel() *Url {
                     BorderForeground(lipgloss.Color("36")).
                     BorderStyle(lipgloss.NormalBorder()).
                     Padding(1).Width(100).Height(6),
+  newPaginator.ActiveDot = paginatorStyle
+	newPaginator.InactiveDot = paginatorStyle 
   }
 }
 
