@@ -30,6 +30,11 @@ const (
 type Url struct {
    methods []httpMethod
    chosenMethod httpMethod 
+
+   textInput textinput.Model
+
+   borderStyle lipgloss.Style
+   httpMethodPag paginator.Model
 }
 
 func InitialUrlModel() *Url {
