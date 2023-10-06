@@ -38,12 +38,9 @@ type Url struct {
 }
 
 func InitialUrlModel() *Url {
-  ti := textinput.New()
-  ti.Placeholder = "https://www.example.com/"
-  ti.Focus()
-  return &Url {
-    url: ti,
-    style: lipgloss.NewStyle().
+  newTextInput := textinput.New()
+  newTextInput.Placeholder = "https://www.example.com/"
+  newTextInput.Focus()
                     BorderForeground(lipgloss.Color("36")).
                     BorderStyle(lipgloss.NormalBorder()).
                     Padding(1).Width(100).Height(6),
