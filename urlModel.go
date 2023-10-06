@@ -18,9 +18,18 @@ var (
                         }).Render("•")
 )
 
+type httpMethod string
+
+const (
+  GET = "GET"
+  POST = "POST"
+  PUT = "PUT"
+  DELETE = "DELETE"
+)
+
 type Url struct {
-   url textinput.Model
-   style lipgloss.Style
+   methods []httpMethod
+   chosenMethod httpMethod 
 }
 
 func InitialUrlModel() *Url {
