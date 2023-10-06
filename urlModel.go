@@ -68,11 +68,28 @@ func (u Url) Init() tea.Cmd {
 }
 
 func (u *Url) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-  u.url, _ = u.url.Update(msg)
+  u.textInput, _ = u.textInput.Update(msg)
   return u, nil
 }
 
 func (u Url) View() string {
-  s := u.style.Render(u.url.View())
-  return s
+  var sBuilder strings.Builder
+  
+  start, end := u.httpMethodPag.GetSliceBounds(len(u.methods))
+  for _, method := range u.methods[start:end] {
+    sBuilder.WriteString("  " + string(method) + "\n")
+  }
+
+  sBuilder.WriteString("  " + u.httpMethodPag.View())
+
+  s := fmt.Sprintf(
+    "\n%s\n",
+    lipgloss.JoinHorizontal(
+      lipgloss.Left,
+      sBuilder.String(),
+      "\t",
+      u.textInput.View(),
+    ),
+  )
+  return  u.borderStyle.Render(s)
 }
