@@ -41,9 +41,12 @@ func InitialUrlModel() *Url {
   newTextInput := textinput.New()
   newTextInput.Placeholder = "https://www.example.com/"
   newTextInput.Focus()
+
+  newBorderStyle := lipgloss.NewStyle().
                     BorderForeground(lipgloss.Color("36")).
-                    BorderStyle(lipgloss.NormalBorder()).
-                    Padding(1).Width(100).Height(6),
+                    BorderStyle(lipgloss.RoundedBorder()).
+                    Padding(0).Width(160).Height(1)
+
   newPaginator.ActiveDot = paginatorStyle
 	newPaginator.InactiveDot = paginatorStyle 
   }
