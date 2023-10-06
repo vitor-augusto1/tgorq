@@ -52,7 +52,7 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     // Quit the program if its not focus on the URL model
     case "q":
       if m.focusedModel == FocusUrl {
-        m.url.url, _ = m.url.url.Update(msg)
+        m.url.textInput, _ = m.url.textInput.Update(msg)
         return m, nil
       }
       return m, tea.Quit
@@ -62,7 +62,6 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     case tea.KeyCtrlU.String():
       m.focusedModel = FocusUrl
       return m, nil
-    // Focus on the method model
     case tea.KeyCtrlM.String():
       m.focusedModel = FocusMethod
       return m, nil
@@ -71,7 +70,7 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
       switch m.focusedModel {
       // Updating the URL
       case FocusUrl:
-        m.url.url, _ = m.url.url.Update(msg)
+        m.url.textInput, _ = m.url.textInput.Update(msg)
         return m, nil
       }
       return m, nil
