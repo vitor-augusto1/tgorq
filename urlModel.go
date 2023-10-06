@@ -53,6 +53,13 @@ func InitialUrlModel() *Url {
   newPaginator.SetTotalPages(len(methodsSlice))
   newPaginator.ActiveDot = paginatorStyle
 	newPaginator.InactiveDot = paginatorStyle 
+
+  return &Url {
+    methods: methodsSlice,
+    chosenMethod: GET,
+    textInput: newTextInput,
+    borderStyle: newBorderStyle,
+    httpMethodPag: newPaginator,
   }
 }
 
