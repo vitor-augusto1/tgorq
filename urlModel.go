@@ -47,6 +47,10 @@ func InitialUrlModel() *Url {
                     BorderStyle(lipgloss.RoundedBorder()).
                     Padding(0).Width(160).Height(1)
 
+  methodsSlice := []httpMethod{GET, POST, PUT, DELETE}
+  newPaginator := paginator.New()
+  newPaginator.Type = paginator.Dots
+  newPaginator.SetTotalPages(len(methodsSlice))
   newPaginator.ActiveDot = paginatorStyle
 	newPaginator.InactiveDot = paginatorStyle 
   }
