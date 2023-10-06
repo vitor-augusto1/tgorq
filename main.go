@@ -5,6 +5,7 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 func main() {
@@ -28,19 +29,13 @@ const (
 )
 
 type mainModel struct {
-  method     *MethodModel
 	url        *Url
-  request    Request
-  response   Response
   focusedModel FocusedModel
 }
 
 func initialModel() mainModel {
   return mainModel{
-    method: InitialMethodModel(),
     url: InitialUrlModel(),
-    request: InitialRequestModel(),
-    response: InitalResponseModel(),
     focusedModel: FocusUrl,
   }
 }
@@ -78,16 +73,6 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
       case FocusUrl:
         m.url.url, _ = m.url.url.Update(msg)
         return m, nil
-      case FocusMethod:
-        // Handling the paginator movement
-        switch msg.String() {
-        case tea.KeyLeft.String(), "h":
-          m.method.paginator.PrevPage()
-          return m, nil
-        case tea.KeyRight.String(), "l":
-          m.method.paginator.NextPage()
-          return m, nil
-        }
       }
       return m, nil
     }
@@ -97,9 +82,10 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m mainModel) View() string {
   s := fmt.Sprintf(
-    "%s\n%s\n%s\n%s\n%s",
-    m.url.View(), m.method.View(), m.request.View(), m.response.View(),
+    "%s\n%s\n",
+    lipgloss.JoinHorizontal(lipgloss.Left, m.url.View()),
     "Press `ctrl+c` or `q` to quit the program...",
   )
+  
 	return s
 }
