@@ -23,13 +23,12 @@ var (
                                 Render("-")
 )
 
-type httpMethod string
-
+type httpMethod int
 const (
-  GET = "GET"
-  POST = "POST"
-  PUT = "PUT"
-  DELETE = "DELETE"
+  GET httpMethod = iota
+  POST
+  PUT
+  DELETE
 )
 
 type Url struct {
