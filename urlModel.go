@@ -83,13 +83,9 @@ func (u Url) View() string {
   sBuilder.WriteString("  " + u.httpMethodPag.View())
 
   s := fmt.Sprintf(
-    "\n%s\n",
-    lipgloss.JoinHorizontal(
-      lipgloss.Left,
+    "\n%s\n\n%s\n",
       sBuilder.String(),
-      "\t",
       u.textInput.View(),
-    ),
   )
   return  u.borderStyle.Render(s)
 }
