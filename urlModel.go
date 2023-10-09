@@ -36,7 +36,7 @@ func (hm httpMethod) String() string {
 }
 
 type Url struct {
-   methods []httpMethod
+   methods []string
    chosenMethod httpMethod 
 
    textInput textinput.Model
@@ -55,7 +55,7 @@ func InitialUrlModel() *Url {
                     BorderStyle(lipgloss.RoundedBorder()).
                     Padding(0).Width(160).Height(1)
 
-  methodsSlice := []httpMethod{GET, POST, PUT, DELETE}
+  methodsSlice := []string{"GET", "POST", "PUT", "DELETE"}
   newPaginator := paginator.New()
   newPaginator.Type = paginator.Dots
   newPaginator.SetTotalPages(len(methodsSlice))
