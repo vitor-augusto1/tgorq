@@ -59,11 +59,11 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     case tea.KeyCtrlC.String():
       return m, tea.Quit
     // Focus on the URL model
-    case tea.KeyCtrlU.String():
-      m.focusedModel = FocusUrl
-      return m, nil
     case tea.KeyCtrlM.String():
       m.focusedModel = FocusMethod
+      return m, nil
+    case tea.KeyCtrlU.String():
+      m.focusedModel = FocusUrl
       return m, nil
     default:
       // Handling each focused model
@@ -71,6 +71,12 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
       // Updating the URL
       case FocusUrl:
         m.url.textInput, _ = m.url.textInput.Update(msg)
+        return m, nil
+      case FocusMethod:
+        // Update the http method model
+        m.url.httpMethodPag, _ = m.url.httpMethodPag.Update(msg)
+        currentPage := m.url.httpMethodPag.Page
+        m.url.chosenMethod = httpMethod(currentPage)
         return m, nil
       }
       return m, nil
