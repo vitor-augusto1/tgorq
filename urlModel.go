@@ -60,7 +60,7 @@ func InitialUrlModel() *Url {
   newPaginator.Type = paginator.Dots
   newPaginator.SetTotalPages(len(methodsSlice))
   newPaginator.ActiveDot = paginatorStyle
-	newPaginator.InactiveDot = paginatorStyle 
+	newPaginator.InactiveDot = paginatorStyleInactive
 
   return &Url {
     methods: methodsSlice,
@@ -76,7 +76,6 @@ func (u Url) Init() tea.Cmd {
 }
 
 func (u *Url) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-  u.textInput, _ = u.textInput.Update(msg)
   return u, nil
 }
 
