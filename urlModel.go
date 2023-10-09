@@ -31,6 +31,10 @@ const (
   DELETE
 )
 
+func (hm httpMethod) String() string {
+  return []string{"GET", "POST", "PUT", "DELETE"}[hm]
+}
+
 type Url struct {
    methods []httpMethod
    chosenMethod httpMethod 
