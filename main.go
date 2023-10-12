@@ -51,6 +51,7 @@ type mainModel struct {
 func initialModel() mainModel {
   return mainModel{
     url: InitialUrlModel(),
+    request: InitialRequestModel(),
     focusedModel: FocusUrl,
   }
 }
@@ -74,7 +75,7 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     case tea.KeyCtrlC.String():
       return m, tea.Quit
     // Focus on the URL model
-    case tea.KeyCtrlM.String():
+    case tea.KeyCtrlI.String():
       m.focusedModel = FocusMethod
       return m, nil
     case tea.KeyCtrlU.String():
