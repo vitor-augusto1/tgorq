@@ -12,8 +12,18 @@ type Request struct {
   headers   textarea.Model
 }
 
+func InitialRequestModel() *Request {
+  bodyTextArea := textarea.New()
+  bodyTextArea.Placeholder = "{request: body}"
 
+  headersTextArea := textarea.New()
+  headersTextArea.Placeholder = "{request: headers}"
 
+  return &Request {
+    body: bodyTextArea,
+    headers: headersTextArea,
+  }
+}
 
 func (rq Request) Init() tea.Cmd {
   	return nil
