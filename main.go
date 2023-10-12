@@ -100,6 +100,16 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
         currentPage := m.url.httpMethodPag.Page
         m.url.chosenMethod = httpMethod(currentPage)
         return m, nil
+      case FocusRequestB:
+        // Now change the focus to the request body textarea
+        m.request.body.Focus()
+        m.request.body, _ = m.request.body.Update(msg)
+        return m, nil
+      case FocusRequestH:
+        // Now change the focus to the request headers textarea
+        m.request.headers.Focus()
+        m.request.headers, _ = m.request.headers.Update(msg)
+        return m, nil
       }
       return m, nil
     }
