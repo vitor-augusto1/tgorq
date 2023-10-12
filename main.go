@@ -20,6 +20,19 @@ func main() {
 	}
 }
 
+var (
+  orange = lipgloss.Color("#fd6a47")
+  paginatorStyle = lipgloss.
+                        NewStyle().
+                        Foreground(lipgloss.AdaptiveColor{
+                          Light: "235", Dark: "252",
+                        }).Render("•")
+  paginatorStyleInactive = lipgloss.
+                                NewStyle().
+                                Foreground(orange).
+                                Render("-")
+)
+
 type FocusedModel int
 const (
   FocusUrl FocusedModel = 1 << iota
