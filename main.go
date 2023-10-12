@@ -43,7 +43,8 @@ const (
 )
 
 type mainModel struct {
-	url        *Url
+	url          *Url
+  request      *Request
   focusedModel FocusedModel
 }
 
