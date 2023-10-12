@@ -37,7 +37,8 @@ type FocusedModel int
 const (
   FocusUrl FocusedModel = 1 << iota
   FocusMethod
-  FocusRequest
+  FocusRequestB
+  FocusRequestH
   FocusResponse
 )
 
