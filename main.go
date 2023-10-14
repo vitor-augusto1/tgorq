@@ -89,6 +89,9 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     case tea.KeyCtrlR.String():
       m.focusedModel = FocusRequestH
       return m, nil
+    case tea.KeyCtrlS.String():
+      m.focusedModel = FocusResponse
+      return m, nil
     default:
       // Handling each focused model
       switch m.focusedModel {
