@@ -20,6 +20,22 @@ func main() {
 	}
 }
 
+func (m mainModel) makeRequest() {
+  // Get the user URL
+  url := m.url.textInput.Value()
+  chosenHttpMethod := m.url.chosenMethod
+
+  if chosenHttpMethod == GET {
+    m.handleGetMethod(url)
+  } else if chosenHttpMethod == POST {
+    return
+  } else if chosenHttpMethod == PUT {
+    return
+  } else if chosenHttpMethod == DELETE {
+    return
+  }
+}
+
 var (
   orange = lipgloss.Color("#fd6a47")
   paginatorStyle = lipgloss.
