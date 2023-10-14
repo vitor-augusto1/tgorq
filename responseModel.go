@@ -17,5 +17,12 @@ type Response struct {
 
 
 func InitialResponseModel() *Response {
+  bodyTextArea := textarea.New()
+  bodyTextArea.Placeholder = "Reponse Body"
+  bodyTextArea.SetValue("")
+
+  headersTextArea := textarea.New()
+  headersTextArea.Placeholder = "Response Header"
+  headersTextArea.SetValue("")
 
 }
