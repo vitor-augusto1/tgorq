@@ -46,3 +46,16 @@ func (rs Response) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
   return rs, nil
 }
 
+func (rs Response) View() string {
+  var sBuilder strings.Builder
+  
+  responseSlice := []string{rs.body.View(), rs.headers.View()}
+  start, end := rs.paginator.GetSliceBounds(len(responseSlice))
+  for _, item := range responseSlice[start:end] {
+    sBuilder.WriteString(string(item) + "\n")
+  }
+
+  sBuilder.WriteString("  " + rs.paginator.View())
+
+  return sBuilder.String()
+}
