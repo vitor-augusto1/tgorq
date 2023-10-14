@@ -127,9 +127,10 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m mainModel) View() string {
   s := fmt.Sprintf(
-    "%s\n\n%s\n\n%s",
+    "%s\n\n%s\n\n%s\n\n%s",
     lipgloss.JoinHorizontal(lipgloss.Left, m.url.View()),
     m.request.View(),
+    m.response.View(),
     "Press `ctrl+c` or `q` to quit the program...",
   )
   
