@@ -41,3 +41,8 @@ func InitialResponseModel() *Response {
 func (rs Response) Init() tea.Cmd {
   return nil
 }
+
+func (rs Response) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+  return rs, nil
+}
+
