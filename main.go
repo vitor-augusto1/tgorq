@@ -90,6 +90,8 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
         return m, nil
       }
       return m, tea.Quit
+    case tea.KeyCtrlL.String():
+      m.makeRequest()
     case tea.KeyCtrlC.String():
       return m, tea.Quit
     // Focus on the URL model
@@ -132,7 +134,6 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
         m.request.headers, _ = m.request.headers.Update(msg)
         return m, nil
       case FocusResponse:
-        m.response.paginator, _ = m.response.paginator.Update(msg)
         return m, nil
       }
       return m, nil
