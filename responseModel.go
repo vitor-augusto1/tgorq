@@ -31,4 +31,10 @@ func InitialResponseModel() *Response {
   newPaginator.ActiveDot = paginatorStyle
 	newPaginator.InactiveDot = paginatorStyleInactive
 
+  return &Response{
+    body: bodyTextArea,
+    headers: headersTextArea,
+    paginator: newPaginator,
+  }
 }
+
