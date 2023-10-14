@@ -25,4 +25,10 @@ func InitialResponseModel() *Response {
   headersTextArea.Placeholder = "Response Header"
   headersTextArea.SetValue("")
 
+  newPaginator := paginator.New()
+  newPaginator.Type = paginator.Dots
+  newPaginator.SetTotalPages(2)
+  newPaginator.ActiveDot = paginatorStyle
+	newPaginator.InactiveDot = paginatorStyleInactive
+
 }
