@@ -38,3 +38,6 @@ func InitialResponseModel() *Response {
   }
 }
 
+func (rs Response) Init() tea.Cmd {
+  return nil
+}
