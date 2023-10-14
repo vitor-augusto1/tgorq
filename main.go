@@ -45,6 +45,7 @@ const (
 type mainModel struct {
 	url          *Url
   request      *Request
+  response     *Response
   focusedModel FocusedModel
 }
 
@@ -52,6 +53,7 @@ func initialModel() mainModel {
   return mainModel{
     url: InitialUrlModel(),
     request: InitialRequestModel(),
+    response: InitialResponseModel(),
     focusedModel: FocusUrl,
   }
 }
