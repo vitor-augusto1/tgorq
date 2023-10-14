@@ -16,3 +16,6 @@ type Response struct {
 }
 
 
+func InitialResponseModel() *Response {
+
+}
