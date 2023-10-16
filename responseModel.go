@@ -19,14 +19,17 @@ type Response struct {
 func InitialResponseModel() *Response {
   bodyTextArea := textarea.New()
   bodyTextArea.Placeholder = "Reponse Body"
+  bodyTextArea.MaxHeight = 0
   bodyTextArea.CharLimit = 0
   bodyTextArea.SetWidth(150)
-  bodyTextArea.SetValue("")
+  bodyTextArea.SetHeight(11)
 
   headersTextArea := textarea.New()
   headersTextArea.Placeholder = "Response Header"
+  headersTextArea.MaxHeight = 0
+  headersTextArea.CharLimit = 0
   headersTextArea.SetWidth(150)
-  headersTextArea.SetValue("")
+  headersTextArea.SetHeight(11)
 
   newPaginator := paginator.New()
   newPaginator.Type = paginator.Dots
