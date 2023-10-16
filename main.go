@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/charmbracelet/bubbles/cursor"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -11,8 +12,8 @@ import (
 func main() {
 	p := tea.NewProgram(
     initialModel(),
+    tea.WithANSICompressor(),
     tea.WithAltScreen(),
-    tea.WithMouseCellMotion(),
   )
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Ain't no way, boy! %v", err)
@@ -84,13 +85,6 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     // Handling the msg being sent
     switch msg.String() {
     // Quit the program if its not focus on the URL model
-    case "q":
-      if m.focusedModel == FocusUrl {
-        m.url.textInput, _ = m.url.textInput.Update(msg)
-        return m, nil
-      }
-      return m, tea.Quit
-    case tea.KeyCtrlL.String():
       m.makeRequest()
     case tea.KeyCtrlC.String():
       return m, tea.Quit
