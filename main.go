@@ -85,6 +85,7 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     // Handling the msg being sent
     switch msg.String() {
     // Quit the program if its not focus on the URL model
+    case "enter":
       m.makeRequest()
     case tea.KeyCtrlC.String():
       return m, tea.Quit
