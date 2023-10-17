@@ -118,6 +118,11 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
       m.focusedModel = FocusRequestH
       return m, nil
     case tea.KeyCtrlS.String():
+      m.response.body.Cursor.SetMode(cursor.CursorBlink)
+      m.url.textInput.Cursor.SetMode(cursor.CursorHide)
+      m.request.body.Cursor.SetMode(cursor.CursorHide)
+      m.request.headers.Cursor.SetMode(cursor.CursorHide)
+      m.response.body.Cursor.Focus()
       m.focusedModel = FocusResponse
       return m, nil
     default:
