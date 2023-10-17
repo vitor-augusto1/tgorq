@@ -165,8 +165,15 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
         case tea.KeyLeft.String(), tea.KeyRight.String():
           m.response.paginator, _ = m.response.paginator.Update(msg)
           return m, nil
+        default:
+          if m.response.body.Focused() {
+            m.response.body, _ = m.response.body.Update(msg)
+            return m, nil
+          }
+          m.response.headers, _ = m.response.headers.Update(msg)
+          return m, nil
+        }
       }
-      return m, nil
     }
   }
   return m, nil
