@@ -161,6 +161,10 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
           m.response.body.Blur()
           m.response.body.Cursor.SetMode(cursor.CursorHide)
         }
+        switch msg.String() {
+        case tea.KeyLeft.String(), tea.KeyRight.String():
+          m.response.paginator, _ = m.response.paginator.Update(msg)
+          return m, nil
       }
       return m, nil
     }
