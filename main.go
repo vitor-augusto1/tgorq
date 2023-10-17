@@ -149,7 +149,18 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
         m.request.headers, _ = m.request.headers.Update(msg)
         return m, nil
       case FocusResponse:
-        return m, nil
+        currentFocusedPage := m.response.paginator.Page
+        if currentFocusedPage == 0 {
+          m.response.body.Focus()
+          m.response.body.Cursor.SetMode(cursor.CursorBlink)
+          m.response.headers.Blur()
+          m.response.headers.Cursor.SetMode(cursor.CursorHide)
+        } else if currentFocusedPage == 1 {
+          m.response.headers.Focus()
+          m.response.headers.Cursor.SetMode(cursor.CursorBlink)
+          m.response.body.Blur()
+          m.response.body.Cursor.SetMode(cursor.CursorHide)
+        }
       }
       return m, nil
     }
