@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 
@@ -29,7 +30,11 @@ func (m mainModel) makeRequest() {
   if chosenHttpMethod == GET {
     m.handleGetMethod(url)
   } else if chosenHttpMethod == POST {
-    return
+    bodyString := m.request.body.Value()
+    headerString := m.request.headers.Value()
+    byteBody := bytes.NewBuffer([]byte(bodyString))
+    byteHeaders := []byte(headerString)
+    m.handlePostMethod(url, byteBody, byteHeaders)
   } else if chosenHttpMethod == PUT {
     return
   } else if chosenHttpMethod == DELETE {
@@ -93,8 +98,9 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     // Handling the msg being sent
     switch msg.String() {
     // Quit the program if its not focus on the URL model
-    case "enter":
+    case tea.KeyCtrlG.String():
       m.makeRequest()
+      m.response.body.GotoTop()
     case tea.KeyCtrlC.String():
       return m, tea.Quit
     // Focus on the URL model
