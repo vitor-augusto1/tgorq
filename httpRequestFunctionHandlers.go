@@ -49,6 +49,8 @@ func (m mainModel) handleGetMethod(url string) {
 func (m mainModel) handlePostMethod(url string, body io.Reader, headers []byte) {
   var req *http.Request
   var reqHeaders map[string]string
+  var res *http.Response
+  var responseBody []byte
   var err error
 
   req, err = http.NewRequest(POST.String(), url, body)
@@ -62,6 +64,16 @@ func (m mainModel) handlePostMethod(url string, body io.Reader, headers []byte) 
 
   for key, value := range reqHeaders {
     req.Header.Set(key, value)
+  }
+
+  res, err = http.DefaultClient.Do(req)
+  if err != nil {
+    m.response.body.SetContent(err.Error())
+  }
+
+  responseBody, err = io.ReadAll(res.Body)
+  if err != nil {
+    m.response.body.SetContent(err.Error())
   }
 
 }
