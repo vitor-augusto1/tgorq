@@ -17,10 +17,14 @@ type Request struct {
 
 func InitialRequestModel() *Request {
   bodyTextArea := textarea.New()
-  bodyTextArea.Placeholder = "{request: body}"
+  bodyTextArea.Placeholder = `{"request": "body"}`
+  bodyTextArea.SetValue(`{"body": "Data ..."}`)
+  bodyTextArea.SetWidth(100)
 
   headersTextArea := textarea.New()
-  headersTextArea.Placeholder = "{request: headers}"
+  headersTextArea.Placeholder = `{"request": "headers"}`
+  headersTextArea.SetValue(`{"Content-type": "application/json; charset=UTF-8"}`)
+  headersTextArea.SetWidth(100)
 
   return &Request {
     body: bodyTextArea,
