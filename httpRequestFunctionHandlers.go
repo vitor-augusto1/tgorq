@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -42,4 +43,8 @@ func (m mainModel) handleGetMethod(url string) {
   m.response.headers.SetContent(stringToBeStoreInTheResponseHeaderTextArea)
 
   defer resp.Body.Close()
+}
+
+
+func (m mainModel) handlePostMethod(url string, body io.Reader, headers []byte) {
 }
