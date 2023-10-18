@@ -47,4 +47,21 @@ func (m mainModel) handleGetMethod(url string) {
 
 
 func (m mainModel) handlePostMethod(url string, body io.Reader, headers []byte) {
+  var req *http.Request
+  var reqHeaders map[string]string
+  var err error
+
+  req, err = http.NewRequest(POST.String(), url, body)
+  if err != nil {
+    m.response.body.SetContent(err.Error())
+  }
+
+  if err = json.Unmarshal(headers, &reqHeaders); err != nil {
+    m.response.body.SetContent(err.Error())
+  }
+
+  for key, value := range reqHeaders {
+    req.Header.Set(key, value)
+  }
+
 }
