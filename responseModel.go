@@ -4,32 +4,27 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/bubbles/paginator"
-	"github.com/charmbracelet/bubbles/textarea"
+	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 
 type Response struct {
-  body      textarea.Model
-  headers   textarea.Model
+  body      viewport.Model
+  headers   viewport.Model
   paginator paginator.Model
+
+  border    lipgloss.Style
 }
 
 
 func InitialResponseModel() *Response {
-  bodyTextArea := textarea.New()
-  bodyTextArea.Placeholder = "Reponse Body"
-  bodyTextArea.MaxHeight = 0
-  bodyTextArea.CharLimit = 0
-  bodyTextArea.SetWidth(150)
-  bodyTextArea.SetHeight(11)
+  bodyViewPort := viewport.New(160, 9)
+  bodyViewPort.SetContent("Response body")
 
-  headersTextArea := textarea.New()
-  headersTextArea.Placeholder = "Response Header"
-  headersTextArea.MaxHeight = 0
-  headersTextArea.CharLimit = 0
-  headersTextArea.SetWidth(150)
-  headersTextArea.SetHeight(11)
+  headersViewPort := viewport.New(160, 9)
+  headersViewPort.SetContent("Response body")
 
   newPaginator := paginator.New()
   newPaginator.Type = paginator.Dots
@@ -38,9 +33,10 @@ func InitialResponseModel() *Response {
 	newPaginator.InactiveDot = paginatorStyleInactive
 
   return &Response{
-    body: bodyTextArea,
-    headers: headersTextArea,
+    body: bodyViewPort,
+    headers: headersViewPort,
     paginator: newPaginator,
+    border: responseBorderStyle,
   }
 }
 
@@ -62,6 +58,5 @@ func (rs Response) View() string {
   }
 
   sBuilder.WriteString("  " + rs.paginator.View())
-
-  return sBuilder.String()
+  return rs.border.Render(sBuilder.String())
 }

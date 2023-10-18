@@ -5,11 +5,14 @@ import (
 
 	"github.com/charmbracelet/bubbles/textarea"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type Request struct {
   body      textarea.Model
   headers   textarea.Model
+
+  border    lipgloss.Style
 }
 
 func InitialRequestModel() *Request {
@@ -22,6 +25,8 @@ func InitialRequestModel() *Request {
   return &Request {
     body: bodyTextArea,
     headers: headersTextArea,
+
+    border: borderStyle,
   }
 }
 
@@ -38,5 +43,5 @@ func (rq Request) View() string {
   
   sBuilder.WriteString(rq.body.View() + "\n\n")
   sBuilder.WriteString(rq.headers.View())
-  return sBuilder.String()
+  return rq.border.Render(sBuilder.String())
 }

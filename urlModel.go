@@ -37,11 +37,6 @@ func InitialUrlModel() *Url {
   newTextInput.Placeholder = "https://www.example.com/"
   newTextInput.Focus()
 
-  newBorderStyle := lipgloss.NewStyle().
-                    BorderForeground(lipgloss.Color("36")).
-                    BorderStyle(lipgloss.RoundedBorder()).
-                    Padding(0).Width(160).Height(1)
-
   methodsSlice := []string{"GET", "POST", "PUT", "DELETE"}
   newPaginator := paginator.New()
   newPaginator.Type = paginator.Dots
@@ -53,7 +48,7 @@ func InitialUrlModel() *Url {
     methods: methodsSlice,
     chosenMethod: GET,
     textInput: newTextInput,
-    borderStyle: newBorderStyle,
+    borderStyle: borderStyle,
     httpMethodPag: newPaginator,
   }
 }

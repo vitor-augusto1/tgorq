@@ -15,19 +15,19 @@ func (m mainModel) handleGetMethod(url string) {
   // Initialize new request
   req, err = http.NewRequest(GET.String(), url, nil)
   if err != nil {
-    m.response.body.SetValue(err.Error())
+    m.response.body.SetContent(err.Error())
   }
 
   // Make the request
   resp, err = http.DefaultClient.Do(req)
   if err != nil {
-    m.response.body.SetValue(err.Error())
+    m.response.body.SetContent(err.Error())
   }
 
   // Read the bytes from the response body
   responseBody, err = io.ReadAll(resp.Body)
   if err != nil {
-    m.response.body.SetValue(err.Error())
+    m.response.body.SetContent(err.Error())
   }
 
   var stringToBeStoreInTheResponseHeaderTextArea string
@@ -38,8 +38,8 @@ func (m mainModel) handleGetMethod(url string) {
   }
 
   // Set response body and headers
-  m.response.body.SetValue(string(responseBody))
-  m.response.headers.SetValue(stringToBeStoreInTheResponseHeaderTextArea)
+  m.response.body.SetContent(string(responseBody))
+  m.response.headers.SetContent(stringToBeStoreInTheResponseHeaderTextArea)
 
   defer resp.Body.Close()
 }

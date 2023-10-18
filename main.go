@@ -48,6 +48,14 @@ var (
                                 NewStyle().
                                 Foreground(orange).
                                 Render("-")
+  borderStyle = lipgloss.NewStyle().
+                    BorderForeground(lipgloss.Color("5")).
+                    BorderStyle(lipgloss.RoundedBorder()).
+                    Padding(0).Width(160).Height(1)
+  responseBorderStyle = lipgloss.NewStyle().
+                    BorderForeground(lipgloss.Color("10")).
+                    BorderStyle(lipgloss.RoundedBorder()).
+                    Padding(0).Width(160).Height(1)
 )
 
 type FocusedModel int
@@ -97,15 +105,12 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
       m.url.textInput.Cursor.SetMode(cursor.CursorBlink)
       m.request.body.Cursor.SetMode(cursor.CursorHide)
       m.request.headers.Cursor.SetMode(cursor.CursorHide)
-      m.response.body.Cursor.SetMode(cursor.CursorHide)
-      m.response.headers.Cursor.SetMode(cursor.CursorHide)
       m.focusedModel = FocusUrl
       return m, nil
     case tea.KeyCtrlB.String():
       m.request.body.Cursor.SetMode(cursor.CursorBlink)
       m.url.textInput.Cursor.SetMode(cursor.CursorHide)
       m.request.headers.Cursor.SetMode(cursor.CursorHide)
-      m.response.body.Cursor.SetMode(cursor.CursorHide)
       m.request.body.Cursor.Focus()
       m.focusedModel = FocusRequestB
       return m, nil
@@ -113,16 +118,13 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
       m.request.headers.Cursor.SetMode(cursor.CursorBlink)
       m.url.textInput.Cursor.SetMode(cursor.CursorHide)
       m.request.body.Cursor.SetMode(cursor.CursorHide)
-      m.response.body.Cursor.SetMode(cursor.CursorHide)
       m.request.headers.Cursor.Focus()
       m.focusedModel = FocusRequestH
       return m, nil
     case tea.KeyCtrlS.String():
-      m.response.body.Cursor.SetMode(cursor.CursorBlink)
       m.url.textInput.Cursor.SetMode(cursor.CursorHide)
       m.request.body.Cursor.SetMode(cursor.CursorHide)
       m.request.headers.Cursor.SetMode(cursor.CursorHide)
-      m.response.body.Cursor.Focus()
       m.focusedModel = FocusResponse
       return m, nil
     default:
@@ -149,29 +151,25 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
         m.request.headers, _ = m.request.headers.Update(msg)
         return m, nil
       case FocusResponse:
-        currentFocusedPage := m.response.paginator.Page
-        if currentFocusedPage == 0 {
-          m.response.body.Focus()
-          m.response.body.Cursor.SetMode(cursor.CursorBlink)
-          m.response.headers.Blur()
-          m.response.headers.Cursor.SetMode(cursor.CursorHide)
-        } else if currentFocusedPage == 1 {
-          m.response.headers.Focus()
-          m.response.headers.Cursor.SetMode(cursor.CursorBlink)
-          m.response.body.Blur()
-          m.response.body.Cursor.SetMode(cursor.CursorHide)
-        }
+        var currentPage int = m.response.paginator.Page
         switch msg.String() {
         case tea.KeyLeft.String(), tea.KeyRight.String():
           m.response.paginator, _ = m.response.paginator.Update(msg)
           return m, nil
-        default:
-          if m.response.body.Focused() {
-            m.response.body, _ = m.response.body.Update(msg)
-            return m, nil
-          }
-          m.response.headers, _ = m.response.headers.Update(msg)
+        // If the user types `ctrl+a` while focus on the response body, the viewport goes to the top
+        case tea.KeyCtrlA.String():
+          if currentPage == 0 { m.response.body.GotoTop() }
           return m, nil
+        // If the user types `ctrl+e` while focus on the response body, the viewport goes to the bottom
+        case tea.KeyCtrlE.String():
+          if currentPage == 0 { m.response.body.GotoBottom() }
+          return m, nil
+        default:
+          var cmd tea.Cmd
+          if currentPage == 0 {
+            m.response.body, cmd = m.response.body.Update(msg)
+          } else { m.response.headers, cmd = m.response.headers.Update(msg) }
+          return m, cmd
         }
       }
     }
