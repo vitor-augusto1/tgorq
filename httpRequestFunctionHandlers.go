@@ -76,4 +76,16 @@ func (m mainModel) handlePostMethod(url string, body io.Reader, headers []byte) 
     m.response.body.SetContent(err.Error())
   }
 
+  var stringToBeStoreInTheResponseHeaderTextArea string
+  for k, v := range res.Header {
+    stringToBeStoreInTheResponseHeaderTextArea += fmt.Sprintf(
+      "%q : %q\n", k, v,
+    )
+  }
+
+  // Set response body and headers
+  m.response.body.SetContent(string(responseBody))
+  m.response.headers.SetContent(stringToBeStoreInTheResponseHeaderTextArea)
+
+  defer res.Body.Close()
 }
