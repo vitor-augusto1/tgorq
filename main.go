@@ -112,17 +112,26 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     // Focus on the URL model
     case tea.KeyCtrlI.String():
       m.focusedModel = FocusMethod
+      m.response.border = inactiveModelStyle
+      m.response.paginator.ActiveDot = inactivePaginatorStyle
+      m.url.httpMethodPag.ActiveDot = activePaginatorStyle
       return m, nil
     case tea.KeyCtrlU.String():
       m.url.textInput.Cursor.SetMode(cursor.CursorBlink)
       m.request.body.Cursor.SetMode(cursor.CursorHide)
       m.request.headers.Cursor.SetMode(cursor.CursorHide)
+      m.response.border = inactiveModelStyle
+      m.response.paginator.ActiveDot = inactivePaginatorStyle
+      m.url.httpMethodPag.ActiveDot = inactivePaginatorStyle
       m.focusedModel = FocusUrl
       return m, nil
     case tea.KeyCtrlB.String():
       m.request.body.Cursor.SetMode(cursor.CursorBlink)
       m.url.textInput.Cursor.SetMode(cursor.CursorHide)
       m.request.headers.Cursor.SetMode(cursor.CursorHide)
+      m.response.border = inactiveModelStyle
+      m.response.paginator.ActiveDot = inactivePaginatorStyle
+      m.url.httpMethodPag.ActiveDot = inactivePaginatorStyle
       m.request.body.Cursor.Focus()
       m.focusedModel = FocusRequestB
       return m, nil
@@ -131,12 +140,18 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
       m.url.textInput.Cursor.SetMode(cursor.CursorHide)
       m.request.body.Cursor.SetMode(cursor.CursorHide)
       m.request.headers.Cursor.Focus()
+      m.response.border = inactiveModelStyle
+      m.response.paginator.ActiveDot = inactivePaginatorStyle
+      m.url.httpMethodPag.ActiveDot = inactivePaginatorStyle
       m.focusedModel = FocusRequestH
       return m, nil
     case tea.KeyCtrlS.String():
       m.url.textInput.Cursor.SetMode(cursor.CursorHide)
       m.request.body.Cursor.SetMode(cursor.CursorHide)
       m.request.headers.Cursor.SetMode(cursor.CursorHide)
+      m.response.border = responseBorderStyle
+      m.response.paginator.ActiveDot = activePaginatorStyle
+      m.url.httpMethodPag.ActiveDot = inactivePaginatorStyle
       m.focusedModel = FocusResponse
       return m, nil
     default:
