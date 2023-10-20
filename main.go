@@ -42,15 +42,18 @@ func (m mainModel) makeRequest() {
 }
 
 var (
-  orange = lipgloss.Color("#fd6a47")
-  paginatorStyle = lipgloss.
+  grey = lipgloss.Color("#6c6c6c")
+  activePaginatorStyle = lipgloss.
                         NewStyle().
-                        Foreground(lipgloss.AdaptiveColor{
-                          Light: "235", Dark: "252",
-                        }).Render("•")
+                        Foreground(lipgloss.Color("#76fd47")).
+                        Render("•")
+  inactivePaginatorStyle = lipgloss.
+                        NewStyle().
+                        Foreground(lipgloss.Color("#6c6c6c")).
+                        Render("•")
   paginatorStyleInactive = lipgloss.
                                 NewStyle().
-                                Foreground(orange).
+                                Foreground(grey).
                                 Render("-")
   borderStyle = lipgloss.NewStyle().
                     BorderForeground(lipgloss.Color("5")).
@@ -58,6 +61,10 @@ var (
                     Padding(0).Width(160).Height(1)
   responseBorderStyle = lipgloss.NewStyle().
                     BorderForeground(lipgloss.Color("10")).
+                    BorderStyle(lipgloss.RoundedBorder()).
+                    Padding(0).Width(160).Height(1)
+  inactiveModelStyle = lipgloss.NewStyle().
+                    BorderForeground(lipgloss.Color("#6c6c6c")).
                     BorderStyle(lipgloss.RoundedBorder()).
                     Padding(0).Width(160).Height(1)
 )
