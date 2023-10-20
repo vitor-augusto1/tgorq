@@ -12,6 +12,7 @@ var (
   reqHeaders map[string]string
   resp *http.Response
   responseBody []byte
+  responseStatusCode int
   err error
 )
 
@@ -38,7 +39,13 @@ func (m mainModel) handleGetMethod(url string) {
     )
   }
 
-  m.response.body.SetContent(string(responseBody))
+  responseStatusCode = resp.StatusCode
+  responseBodyString := fmt.Sprintf(
+    "%d\n\n%s",
+    responseStatusCode,
+    string(responseBody),
+  )
+  m.response.body.SetContent(responseBodyString)
   m.response.headers.SetContent(stringToBeStoreInTheResponseHeaderTextArea)
 
   defer resp.Body.Close()
@@ -76,7 +83,13 @@ func (m mainModel) handlePostMethod(url string, body io.Reader, headers []byte) 
     )
   }
 
-  m.response.body.SetContent(string(responseBody))
+  responseStatusCode = resp.StatusCode
+  responseBodyString := fmt.Sprintf(
+    "%d\n\n%s",
+    responseStatusCode,
+    string(responseBody),
+  )
+  m.response.body.SetContent(responseBodyString)
   m.response.headers.SetContent(stringToBeStoreInTheResponseHeaderTextArea)
 
   defer resp.Body.Close()
@@ -119,7 +132,13 @@ func  (m mainModel) handlePutMethod(url string, body io.Reader, headers []byte) 
     )
   }
 
-  m.response.body.SetContent(string(responseBody))
+  responseStatusCode = resp.StatusCode
+  responseBodyString := fmt.Sprintf(
+    "%d\n\n%s",
+    responseStatusCode,
+    string(responseBody),
+  )
+  m.response.body.SetContent(responseBodyString)
   m.response.headers.SetContent(stringToBeStoreInTheResponseHeaderTextArea)
 
   defer resp.Body.Close()
@@ -156,7 +175,14 @@ func (m mainModel) handleDeleteMethod(url string, headers []byte) {
     )
   }
 
-  m.response.body.SetContent(string(responseBody))
+
+  responseStatusCode = resp.StatusCode
+  responseBodyString := fmt.Sprintf(
+    "%d\n\n%s",
+    responseStatusCode,
+    string(responseBody),
+  )
+  m.response.body.SetContent(responseBodyString)
   m.response.headers.SetContent(stringToBeStoreInTheResponseHeaderTextArea)
 
   defer resp.Body.Close()
