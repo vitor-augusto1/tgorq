@@ -26,19 +26,18 @@ func (m mainModel) makeRequest() {
   // Get the user URL
   url := m.url.textInput.Value()
   chosenHttpMethod := m.url.chosenMethod
-
+  bodyString := m.request.body.Value()
+  headerString := m.request.headers.Value()
+  byteBody := bytes.NewBuffer([]byte(bodyString))
+  byteHeaders := []byte(headerString)
   if chosenHttpMethod == GET {
     m.handleGetMethod(url)
   } else if chosenHttpMethod == POST {
-    bodyString := m.request.body.Value()
-    headerString := m.request.headers.Value()
-    byteBody := bytes.NewBuffer([]byte(bodyString))
-    byteHeaders := []byte(headerString)
     m.handlePostMethod(url, byteBody, byteHeaders)
   } else if chosenHttpMethod == PUT {
-    return
+    m.handlePutMethod(url, byteBody, byteHeaders)
   } else if chosenHttpMethod == DELETE {
-    return
+    m.handleDeleteMethod(url, byteHeaders)
   }
 }
 
