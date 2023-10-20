@@ -8,10 +8,13 @@ import (
 )
 
 func (m mainModel) handleGetMethod(url string) {
-  var req *http.Request
-  var resp *http.Response
-  var responseBody []byte
-  var err error
+var (
+  req *http.Request
+  reqHeaders map[string]string
+  resp *http.Response
+  responseBody []byte
+  err error
+)
 
   // Initialize new request
   req, err = http.NewRequest(GET.String(), url, nil)
