@@ -159,7 +159,7 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
       case FocusResponse:
         var currentPage int = m.response.paginator.Page
         switch msg.String() {
-        case tea.KeyLeft.String(), tea.KeyRight.String():
+        case tea.KeyLeft.String(), tea.KeyRight.String(), "l", "h":
           m.response.paginator, _ = m.response.paginator.Update(msg)
           return m, nil
         // If the user types `ctrl+a` while focus on the response body, the viewport goes to the top
