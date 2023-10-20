@@ -29,14 +29,14 @@ func InitialResponseModel() *Response {
   newPaginator := paginator.New()
   newPaginator.Type = paginator.Dots
   newPaginator.SetTotalPages(2)
-  newPaginator.ActiveDot = paginatorStyle
+  newPaginator.ActiveDot = inactivePaginatorStyle
 	newPaginator.InactiveDot = paginatorStyleInactive
 
   return &Response{
     body: bodyViewPort,
     headers: headersViewPort,
     paginator: newPaginator,
-    border: responseBorderStyle,
+    border: inactiveModelStyle,
   }
 }
 

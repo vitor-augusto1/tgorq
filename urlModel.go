@@ -41,7 +41,7 @@ func InitialUrlModel() *Url {
   newPaginator := paginator.New()
   newPaginator.Type = paginator.Dots
   newPaginator.SetTotalPages(len(methodsSlice))
-  newPaginator.ActiveDot = paginatorStyle
+  newPaginator.ActiveDot = inactivePaginatorStyle
 	newPaginator.InactiveDot = paginatorStyleInactive
 
   return &Url {
