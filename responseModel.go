@@ -24,7 +24,7 @@ func InitialResponseModel() *Response {
   bodyViewPort.SetContent("Response body")
 
   headersViewPort := viewport.New(160, 9)
-  headersViewPort.SetContent("Response body")
+  headersViewPort.SetContent("Response headers")
 
   newPaginator := paginator.New()
   newPaginator.Type = paginator.Dots
