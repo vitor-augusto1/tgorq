@@ -4,7 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 )
 
 var (
@@ -13,8 +16,26 @@ var (
   resp *http.Response
   responseBody []byte
   responseStatusCode int
+  responseBodyOutput = "./response/body.txt"
+  responseHeadersOutput = "./response/headers.txt"
   err error
 )
+
+func (m mainModel) createOutputFile(content string, pathname string) {
+  dir := filepath.Dir(pathname)
+  if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+    log.Println(err)
+    return
+  }
+  file, err := os.Create(pathname)
+  if err != nil {
+    log.Println("Error creating the output file: ", err)
+    return
+  }
+  defer file.Close()
+  
+  fmt.Fprintf(file, "%s", content)
+}
 
 func (m mainModel) handleGetMethod(url string) {
   req, err = http.NewRequest(GET.String(), url, nil)
@@ -47,6 +68,11 @@ func (m mainModel) handleGetMethod(url string) {
   )
   m.response.body.SetContent(responseBodyString)
   m.response.headers.SetContent(stringToBeStoreInTheResponseHeaderTextArea)
+
+  if SaveToFile {
+    m.createOutputFile(responseBodyString, responseBodyOutput)
+    m.createOutputFile(stringToBeStoreInTheResponseHeaderTextArea, responseHeadersOutput)
+  }
 
   defer resp.Body.Close()
 }
@@ -91,6 +117,11 @@ func (m mainModel) handlePostMethod(url string, body io.Reader, headers []byte) 
   )
   m.response.body.SetContent(responseBodyString)
   m.response.headers.SetContent(stringToBeStoreInTheResponseHeaderTextArea)
+
+  if SaveToFile {
+    m.createOutputFile(responseBodyString, responseBodyOutput)
+    m.createOutputFile(stringToBeStoreInTheResponseHeaderTextArea, responseHeadersOutput)
+  }
 
   defer resp.Body.Close()
 }
@@ -141,6 +172,11 @@ func  (m mainModel) handlePutMethod(url string, body io.Reader, headers []byte) 
   m.response.body.SetContent(responseBodyString)
   m.response.headers.SetContent(stringToBeStoreInTheResponseHeaderTextArea)
 
+  if SaveToFile {
+    m.createOutputFile(responseBodyString, responseBodyOutput)
+    m.createOutputFile(stringToBeStoreInTheResponseHeaderTextArea, responseHeadersOutput)
+  }
+
   defer resp.Body.Close()
 }
 
@@ -184,6 +220,11 @@ func (m mainModel) handleDeleteMethod(url string, headers []byte) {
   )
   m.response.body.SetContent(responseBodyString)
   m.response.headers.SetContent(stringToBeStoreInTheResponseHeaderTextArea)
+
+  if SaveToFile {
+    m.createOutputFile(responseBodyString, responseBodyOutput)
+    m.createOutputFile(stringToBeStoreInTheResponseHeaderTextArea, responseHeadersOutput)
+  }
 
   defer resp.Body.Close()
 }
