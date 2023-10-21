@@ -89,6 +89,9 @@ type mainModel struct {
   request      *Request
   response     *Response
   focusedModel FocusedModel
+
+  width        int
+  height       int
 }
 
 func initialModel() mainModel {
@@ -106,6 +109,9 @@ func (m mainModel) Init() tea.Cmd {
 
 func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
   switch msg := msg.(type) {
+  case tea.WindowSizeMsg:
+    m.width = msg.Width
+    m.height = msg.Height
   case tea.KeyMsg:
     // Handling the msg being sent
     switch msg.String() {
@@ -218,6 +224,6 @@ func (m mainModel) View() string {
     m.response.View(),
     "Press `ctrl+c` or `q` to quit the program...",
   )
-  
-	return s
-}
+  lipPlace := lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, s)
+  return lipPlace
+}                                                           
