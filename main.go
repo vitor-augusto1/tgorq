@@ -18,6 +18,7 @@ func main() {
 
 // Cobra vars
 var (
+  SaveToFile = false
   rootCmd = &cobra.Command{
     Use: "tgorq",
     Short: "Make http requests from the terminal",
@@ -51,16 +52,17 @@ var (
   }
 )
 
+func init() {
+  rootCmd.Flags().BoolP(
+    "enable-output", "o",
+    false, `Stores the response body and headers on the current directory.`,
   )
-  f, err := tea.LogToFile("debug.log", "debug")
-  if err != nil {
+}
+
+func Execute() {
+  if err := rootCmd.Execute(); err != nil {
     log.Fatal(err)
   }
-  defer f.Close()
-	if _, err := p.Run(); err != nil {
-		fmt.Printf("Ain't no way, boy! %v", err)
-		os.Exit(1)
-	}
 }
 
 func (m mainModel) makeRequest() {
@@ -82,6 +84,7 @@ func (m mainModel) makeRequest() {
   }
 }
 
+// Styles vars
 var (
   grey = lipgloss.Color("#6c6c6c")
   activePaginatorStyle = lipgloss.
