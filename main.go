@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/charmbracelet/bubbles/cursor"
@@ -16,6 +17,11 @@ func main() {
     tea.WithANSICompressor(),
     tea.WithAltScreen(),
   )
+  f, err := tea.LogToFile("debug.log", "debug")
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer f.Close()
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Ain't no way, boy! %v", err)
 		os.Exit(1)
