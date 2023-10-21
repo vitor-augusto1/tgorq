@@ -13,10 +13,44 @@ import (
 )
 
 func main() {
-	p := tea.NewProgram(
-    initialModel(),
-    tea.WithANSICompressor(),
-    tea.WithAltScreen(),
+  Execute()
+}
+
+// Cobra vars
+var (
+  rootCmd = &cobra.Command{
+    Use: "tgorq",
+    Short: "Make http requests from the terminal",
+    Long: `
+    A vim like TUI (Text User Interface) that allows you to make http requests.
+    Example: ./tgorq [ -o | --enable-output ]
+    `,
+    Run: func(cmd *cobra.Command, args []string) {
+      outputFlagValue, err := cmd.Flags().GetBool("enable-output")
+      if err != nil {
+        log.Fatal(err)
+      }
+      if outputFlagValue {
+        SaveToFile = true
+      }
+      p := tea.NewProgram(
+        initialModel(),
+        tea.WithANSICompressor(),
+        tea.WithAltScreen(),
+      )
+      f, err := tea.LogToFile("debug.log", "debug")
+      if err != nil {
+        log.Fatal(err)
+      }
+      defer f.Close()
+      if _, err := p.Run(); err != nil {
+        fmt.Printf("Ain't no way, boy! %v", err)
+        os.Exit(1)
+      }
+    },
+  }
+)
+
   )
   f, err := tea.LogToFile("debug.log", "debug")
   if err != nil {
