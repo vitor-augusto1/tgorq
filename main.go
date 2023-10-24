@@ -34,7 +34,7 @@ __/\\\\\\\\\\\\\\\________________________________________________________
        _______\/\\\_______\//\\\\\\\\___\///\\\\\/___\/\\\________________\/\\\\_ 
         _______\///_________\////////______\/////_____\///_________________\////__
 
-    A vim like TUI (Text User Interface) that allows you to make http requests.
+    A vim-like TUI (Text User Interface) that allows you to make http requests.
     Example: ./tgorq [ -o | --enable-output ]
     `,
     Run: func(cmd *cobra.Command, args []string) {
@@ -66,7 +66,7 @@ __/\\\\\\\\\\\\\\\________________________________________________________
 func init() {
   rootCmd.Flags().BoolP(
     "enable-output", "o",
-    false, `Stores the response body and headers on the current directory.`,
+    false, `Stores the response body and headers in the response directory.`,
   )
 }
 
@@ -271,7 +271,7 @@ func (m mainModel) View() string {
     lipgloss.JoinHorizontal(lipgloss.Left, m.url.View()),
     m.request.View(),
     m.response.View(),
-    "Press `ctrl+c` or `q` to quit the program...",
+    "Press `ctrl+c` to quit the program...",
   )
   lipPlace := lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, s)
   return lipPlace
