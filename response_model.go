@@ -10,7 +10,7 @@ import (
 )
 
 
-type Response struct {
+type ResponseModel struct {
   body      viewport.Model
   headers   viewport.Model
   paginator paginator.Model
@@ -19,12 +19,12 @@ type Response struct {
 }
 
 
-func InitialResponseModel() *Response {
+func InitialResponseModel() *ResponseModel {
   bodyViewPort := viewport.New(160, 9)
-  bodyViewPort.SetContent("Response body")
+  bodyViewPort.SetContent("ResponseModel body")
 
   headersViewPort := viewport.New(160, 9)
-  headersViewPort.SetContent("Response headers")
+  headersViewPort.SetContent("ResponseModel headers")
 
   newPaginator := paginator.New()
   newPaginator.Type = paginator.Dots
@@ -32,7 +32,7 @@ func InitialResponseModel() *Response {
   newPaginator.ActiveDot = inactivePaginatorStyle
 	newPaginator.InactiveDot = paginatorStyleInactive
 
-  return &Response{
+  return &ResponseModel{
     body: bodyViewPort,
     headers: headersViewPort,
     paginator: newPaginator,
@@ -40,15 +40,15 @@ func InitialResponseModel() *Response {
   }
 }
 
-func (rs Response) Init() tea.Cmd {
+func (rs ResponseModel) Init() tea.Cmd {
   return nil
 }
 
-func (rs Response) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (rs ResponseModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
   return rs, nil
 }
 
-func (rs Response) View() string {
+func (rs ResponseModel) View() string {
   var sBuilder strings.Builder
   
   responseSlice := []string{rs.body.View(), rs.headers.View()}
