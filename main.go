@@ -100,6 +100,7 @@ func (m mainModel) createOutputFile(content string, pathname string) {
 }
 
 func (m mainModel) makeRequest() {
+  m.storeCurrentState()
   url := m.url.textInput.Value()
   chosenHttpMethod := m.url.chosenMethod
   bodyString := m.request.body.Value()
