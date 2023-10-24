@@ -4,10 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 )
 
 var (
@@ -16,76 +13,64 @@ var (
   resp *http.Response
   responseBody []byte
   responseStatusCode int
-  responseBodyOutput = "./response/body.txt"
-  responseHeadersOutput = "./response/headers.txt"
   err error
 )
 
-func (m mainModel) createOutputFile(content string, pathname string) {
-  dir := filepath.Dir(pathname)
-  if err := os.MkdirAll(dir, os.ModePerm); err != nil {
-    log.Println(err)
-    return
-  }
-  file, err := os.Create(pathname)
-  if err != nil {
-    log.Println("Error creating the output file: ", err)
-    return
-  }
-  defer file.Close()
-  
-  fmt.Fprintf(file, "%s", content)
+type Response struct {
+  rawResponse string
+  body        string
+  headers     string
+  statusCode  int
 }
 
-func (m mainModel) handleGetMethod(url string) {
+func handleGetMethod(url string) (*Response, error) {
   req, err = http.NewRequest(GET.String(), url, nil)
   if err != nil {
-    m.response.body.SetContent(err.Error())
+    return nil, err
   }
 
   resp, err = http.DefaultClient.Do(req)
   if err != nil {
-    m.response.body.SetContent(err.Error())
+    return nil, err
   }
 
   responseBody, err = io.ReadAll(resp.Body)
   if err != nil {
-    m.response.body.SetContent(err.Error())
+    return nil, err
   }
 
-  var stringToBeStoreInTheResponseHeaderTextArea string
+  var responseHeaders string
   for k, v := range resp.Header {
-    stringToBeStoreInTheResponseHeaderTextArea += fmt.Sprintf(
+    responseHeaders += fmt.Sprintf(
       "%q : %q\n", k, v,
     )
   }
-
   responseStatusCode = resp.StatusCode
   responseBodyString := fmt.Sprintf(
     "%d\n\n%s",
     responseStatusCode,
     string(responseBody),
   )
-  m.response.body.SetContent(responseBodyString)
-  m.response.headers.SetContent(stringToBeStoreInTheResponseHeaderTextArea)
-
-  if SaveToFile {
-    m.createOutputFile(responseBodyString, responseBodyOutput)
-    m.createOutputFile(stringToBeStoreInTheResponseHeaderTextArea, responseHeadersOutput)
-  }
-
   defer resp.Body.Close()
+
+  newResponse := &Response{
+    rawResponse: string(responseBody),
+    body: responseBodyString,
+    headers: responseHeaders,
+    statusCode: responseStatusCode,
+  }
+  return newResponse, nil
 }
 
 
-func (m mainModel) handlePostMethod(url string, body io.Reader, headers []byte) {
+func handlePostMethod(url string, body io.Reader, headers []byte) (*Response, error) {
   req, err = http.NewRequest(POST.String(), url, body)
   if err != nil {
-    m.response.body.SetContent(err.Error())
+    return nil, err
   }
 
   if err = json.Unmarshal(headers, &reqHeaders); err != nil {
-    m.response.body.SetContent(err.Error())
+    return nil, err
   }
 
   for key, value := range reqHeaders {
@@ -94,17 +79,17 @@ func (m mainModel) handlePostMethod(url string, body io.Reader, headers []byte) 
 
   resp, err = http.DefaultClient.Do(req)
   if err != nil {
-    m.response.body.SetContent(err.Error())
+    return nil, err
   }
 
   responseBody, err = io.ReadAll(resp.Body)
   if err != nil {
-    m.response.body.SetContent(err.Error())
+    return nil, err
   }
 
-  var stringToBeStoreInTheResponseHeaderTextArea string
+  var responseHeaders string
   for k, v := range resp.Header {
-    stringToBeStoreInTheResponseHeaderTextArea += fmt.Sprintf(
+    responseHeaders += fmt.Sprintf(
       "%q : %q\n", k, v,
     )
   }
@@ -115,31 +100,25 @@ func (m mainModel) handlePostMethod(url string, body io.Reader, headers []byte) 
     responseStatusCode,
     string(responseBody),
   )
-  m.response.body.SetContent(responseBodyString)
-  m.response.headers.SetContent(stringToBeStoreInTheResponseHeaderTextArea)
-
-  if SaveToFile {
-    m.createOutputFile(responseBodyString, responseBodyOutput)
-    m.createOutputFile(stringToBeStoreInTheResponseHeaderTextArea, responseHeadersOutput)
-  }
-
   defer resp.Body.Close()
+
+  newResponse := &Response{
+    rawResponse: string(responseBody),
+    body: responseBodyString,
+    headers: responseHeaders,
+    statusCode: responseStatusCode,
+  }
+  return newResponse, nil
 }
 
-func  (m mainModel) handlePutMethod(url string, body io.Reader, headers []byte) {
-  var req *http.Request
-  var reqHeaders map[string]string
-  var resp *http.Response
-  var responseBody []byte
-  var err error
-
+func handlePutMethod(url string, body io.Reader, headers []byte) (*Response, error) {
   req, err = http.NewRequest(PUT.String(), url, body)
   if err != nil {
-    m.response.body.SetContent(err.Error())
+    return nil, err
   }
 
   if err = json.Unmarshal(headers, &reqHeaders); err != nil {
-    m.response.body.SetContent(err.Error())
+    return nil, err
   }
 
   for key, value := range reqHeaders {
@@ -148,17 +127,17 @@ func  (m mainModel) handlePutMethod(url string, body io.Reader, headers []byte) 
 
   resp, err = http.DefaultClient.Do(req)
   if err != nil {
-    m.response.body.SetContent(err.Error())
+    return nil, err
   }
 
   responseBody, err = io.ReadAll(resp.Body)
   if err != nil {
-    m.response.body.SetContent(err.Error())
+    return nil, err
   }
 
-  var stringToBeStoreInTheResponseHeaderTextArea string
+  var responseHeaders string
   for k, v := range resp.Header {
-    stringToBeStoreInTheResponseHeaderTextArea += fmt.Sprintf(
+    responseHeaders += fmt.Sprintf(
       "%q : %q\n", k, v,
     )
   }
@@ -169,25 +148,26 @@ func  (m mainModel) handlePutMethod(url string, body io.Reader, headers []byte) 
     responseStatusCode,
     string(responseBody),
   )
-  m.response.body.SetContent(responseBodyString)
-  m.response.headers.SetContent(stringToBeStoreInTheResponseHeaderTextArea)
-
-  if SaveToFile {
-    m.createOutputFile(responseBodyString, responseBodyOutput)
-    m.createOutputFile(stringToBeStoreInTheResponseHeaderTextArea, responseHeadersOutput)
-  }
 
   defer resp.Body.Close()
+
+  newResponse := &Response{
+    rawResponse: string(responseBody),
+    body: responseBodyString,
+    headers: responseHeaders,
+    statusCode: responseStatusCode,
+  }
+  return newResponse, nil
 }
 
-func (m mainModel) handleDeleteMethod(url string, headers []byte) {
+func handleDeleteMethod(url string, headers []byte) (*Response, error) {
   req, err = http.NewRequest(DELETE.String(), url, nil)
   if err != nil {
-    m.response.body.SetContent(err.Error())
+    return nil, err
   }
 
   if err = json.Unmarshal(headers, &reqHeaders); err != nil {
-    m.response.body.SetContent(err.Error())
+    return nil, err
   }
 
   for key, value := range reqHeaders {
@@ -196,21 +176,20 @@ func (m mainModel) handleDeleteMethod(url string, headers []byte) {
 
   resp, err = http.DefaultClient.Do(req)
   if err != nil {
-    m.response.body.SetContent(err.Error())
+    return nil, err
   }
 
   responseBody, err = io.ReadAll(resp.Body)
   if err != nil {
-    m.response.body.SetContent(err.Error())
+    return nil, err
   }
 
-  var stringToBeStoreInTheResponseHeaderTextArea string
+  var responseHeaders string
   for k, v := range resp.Header {
-    stringToBeStoreInTheResponseHeaderTextArea += fmt.Sprintf(
+    responseHeaders += fmt.Sprintf(
       "%q : %q\n", k, v,
     )
   }
-
 
   responseStatusCode = resp.StatusCode
   responseBodyString := fmt.Sprintf(
@@ -218,13 +197,13 @@ func (m mainModel) handleDeleteMethod(url string, headers []byte) {
     responseStatusCode,
     string(responseBody),
   )
-  m.response.body.SetContent(responseBodyString)
-  m.response.headers.SetContent(stringToBeStoreInTheResponseHeaderTextArea)
-
-  if SaveToFile {
-    m.createOutputFile(responseBodyString, responseBodyOutput)
-    m.createOutputFile(stringToBeStoreInTheResponseHeaderTextArea, responseHeadersOutput)
-  }
-
   defer resp.Body.Close()
+
+  newResponse := &Response{
+    rawResponse: string(responseBody),
+    body: responseBodyString,
+    headers: responseHeaders,
+    statusCode: responseStatusCode,
+  }
+  return newResponse, nil
 }
