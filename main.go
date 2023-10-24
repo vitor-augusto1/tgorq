@@ -100,7 +100,6 @@ func (m mainModel) createOutputFile(content string, pathname string) {
 }
 
 func (m mainModel) makeRequest() {
-  // Get the user URL
   url := m.url.textInput.Value()
   chosenHttpMethod := m.url.chosenMethod
   bodyString := m.request.body.Value()
@@ -108,13 +107,53 @@ func (m mainModel) makeRequest() {
   byteBody := bytes.NewBuffer([]byte(bodyString))
   byteHeaders := []byte(headerString)
   if chosenHttpMethod == GET {
-    m.handleGetMethod(url)
+    response, err := handleGetMethod(url)
+    if err != nil {
+      m.response.body.SetContent(err.Error())
+      return
+    }
+    m.response.body.SetContent(response.body)
+    m.response.headers.SetContent(response.headers)
+    if SaveToFile {
+      m.createOutputFile(response.body, responseBodyOutput)
+      m.createOutputFile(response.headers, responseHeadersOutput)
+    }
   } else if chosenHttpMethod == POST {
-    m.handlePostMethod(url, byteBody, byteHeaders)
+    response, err := handlePostMethod(url, byteBody, byteHeaders)
+    if err != nil {
+      m.response.body.SetContent(err.Error())
+      return
+    }
+    m.response.body.SetContent(response.body)
+    m.response.headers.SetContent(response.headers)
+    if SaveToFile {
+      m.createOutputFile(response.body, responseBodyOutput)
+      m.createOutputFile(response.headers, responseHeadersOutput)
+    }
   } else if chosenHttpMethod == PUT {
-    m.handlePutMethod(url, byteBody, byteHeaders)
+    response, err := handlePutMethod(url, byteBody, byteHeaders)
+    if err != nil {
+      m.response.body.SetContent(err.Error())
+      return
+    }
+    m.response.body.SetContent(response.body)
+    m.response.headers.SetContent(response.headers)
+    if SaveToFile {
+      m.createOutputFile(response.body, responseBodyOutput)
+      m.createOutputFile(response.headers, responseHeadersOutput)
+    }
   } else if chosenHttpMethod == DELETE {
-    m.handleDeleteMethod(url, byteHeaders)
+    response, err := handleDeleteMethod(url, byteHeaders)
+    if err != nil {
+      m.response.body.SetContent(err.Error())
+      return
+    }
+    m.response.body.SetContent(response.body)
+    m.response.headers.SetContent(response.headers)
+    if SaveToFile {
+      m.createOutputFile(response.body, responseBodyOutput)
+      m.createOutputFile(response.headers, responseHeadersOutput)
+    }
   }
 }
 
@@ -159,7 +198,7 @@ const (
 type mainModel struct {
 	url          *Url
   request      *Request
-  response     *Response
+  response     *ResponseModel
   focusedModel FocusedModel
 
   width        int
