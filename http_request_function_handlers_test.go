@@ -101,3 +101,30 @@ func TestHandlePutMethod(t *testing.T) {
 }
 
 
+func TestHandleDeleteMethod(t *testing.T) {
+  expectedResponse := `{"success": "101 deleted successfully"}`
+  headerString := `{"Content-type": "application/json; charset=UTF-8"}`
+  byteHeaders := []byte(headerString)
+
+  nServer := httptest.NewServer(
+    http.HandlerFunc(
+      func(w http.ResponseWriter, r *http.Request) {
+        if r.Method != http.MethodDelete {
+          t.Errorf("Expected a DELETE request, got %s", r.Method)
+          return 
+        }
+        fmt.Fprintf(w, expectedResponse)
+      },
+    ),
+  )
+  defer nServer.Close()
+
+  resp, err := handleDeleteMethod(nServer.URL, byteHeaders)
+  if err != nil {
+    t.Errorf("Delete request failed: %s", err)
+    return 
+  }
+  if resp.rawResponse != expectedResponse {
+    t.Errorf("Expected response to be %s got %s", expectedResponse, resp.rawResponse)
+  }
+}
