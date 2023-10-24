@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/charmbracelet/bubbles/cursor"
 	tea "github.com/charmbracelet/bubbletea"
@@ -15,6 +16,12 @@ import (
 func main() {
   Execute()
 }
+
+// output file vars
+var (
+  responseBodyOutput = "./response/body.txt"
+  responseHeadersOutput = "./response/headers.txt"
+)
 
 // Cobra vars
 var (
@@ -74,6 +81,22 @@ func Execute() {
   if err := rootCmd.Execute(); err != nil {
     log.Fatal(err)
   }
+}
+
+func (m mainModel) createOutputFile(content string, pathname string) {
+  dir := filepath.Dir(pathname)
+  if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+    log.Println(err)
+    return
+  }
+  file, err := os.Create(pathname)
+  if err != nil {
+    log.Println("Error creating the output file: ", err)
+    return
+  }
+  defer file.Close()
+  
+  fmt.Fprintf(file, "%s", content)
 }
 
 func (m mainModel) makeRequest() {
