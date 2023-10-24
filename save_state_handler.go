@@ -27,3 +27,11 @@ func writeToFile(f *os.File, content string) {
   defer f.Close()
 }
 
+func fileExists(path string) bool {
+  _, err := os.Stat(path)
+  if os.IsNotExist(err) {
+    return false
+  }
+  return err == nil
+}
+
