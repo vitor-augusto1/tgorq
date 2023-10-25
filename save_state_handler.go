@@ -100,3 +100,44 @@ func (m mainModel) stateFileExists() bool {
 }
 
 
+func (m mainModel) restorePreviousState() {
+  configDir, err := os.UserConfigDir()
+  if err != nil {
+    log.Println("Error finding the config dir: ", err)
+    return
+  }
+	filePath := filepath.Join(configDir, "tgorq")
+	savedStateFile := filepath.Join(configDir, "tgorq", "state.json")
+
+  // Check if the path exists. If not, create it.
+  if !fileExists(filePath) {
+      return
+  }
+
+  // Checking if the file exists and create it if not
+  if !fileExists(savedStateFile) {
+      return
+  }
+
+  jsonFile, err := os.Open(savedStateFile)
+  if err != nil {
+    log.Println("Error open the JSON file: ", err)
+    return
+  }
+  defer jsonFile.Close()
+
+  byteValue, _ := io.ReadAll(jsonFile)
+
+  var currentState CurrentState
+  if err := json.Unmarshal(byteValue, &currentState); err != nil {
+    log.Println("Error unmarshilling the JSON file: ", err)
+    return
+  }
+  log.Println("This is the current State variable: ", currentState)
+
+  m.url.textInput.SetValue(currentState.Url)
+  m.request.body.SetValue(currentState.RequestBody)
+  m.request.headers.SetValue(currentState.RequestHeaders)
+  m.response.body.SetContent(currentState.ResponseBody)
+  m.response.headers.SetContent(currentState.ResponseHeaders)
+}
