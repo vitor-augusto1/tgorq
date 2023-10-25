@@ -1,18 +1,19 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"os"
 	"path/filepath"
 )
 
 type CurrentState struct {
-  method          httpMethod
-  url             string
-  requestBody     string
-  requestHeaders  string
-  responseBody    string
-  responseHeaders string
+  Method          httpMethod `json:"method"`
+  Url             string     `json:"url"`
+  RequestBody     string     `json:"request_body"`
+  RequestHeaders  string     `json:"request_headers"`
+  ResponseBody    string     `json:"response_body"`
+  ResponseHeaders string     `json:"response_headers"`
 }
 
 func writeToFile(f *os.File, content string) {
