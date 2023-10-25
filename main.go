@@ -100,7 +100,6 @@ func (m mainModel) createOutputFile(content string, pathname string) {
 }
 
 func (m mainModel) makeRequest() {
-  m.storeCurrentState()
   url := m.url.textInput.Value()
   chosenHttpMethod := m.url.chosenMethod
   bodyString := m.request.body.Value()
@@ -115,6 +114,7 @@ func (m mainModel) makeRequest() {
     }
     m.response.body.SetContent(response.body)
     m.response.headers.SetContent(response.headers)
+    m.rawResponse = response
     if SaveToFile {
       m.createOutputFile(response.body, responseBodyOutput)
       m.createOutputFile(response.headers, responseHeadersOutput)
@@ -127,6 +127,7 @@ func (m mainModel) makeRequest() {
     }
     m.response.body.SetContent(response.body)
     m.response.headers.SetContent(response.headers)
+    m.rawResponse = response
     if SaveToFile {
       m.createOutputFile(response.body, responseBodyOutput)
       m.createOutputFile(response.headers, responseHeadersOutput)
@@ -139,6 +140,7 @@ func (m mainModel) makeRequest() {
     }
     m.response.body.SetContent(response.body)
     m.response.headers.SetContent(response.headers)
+    m.rawResponse = response
     if SaveToFile {
       m.createOutputFile(response.body, responseBodyOutput)
       m.createOutputFile(response.headers, responseHeadersOutput)
@@ -151,11 +153,13 @@ func (m mainModel) makeRequest() {
     }
     m.response.body.SetContent(response.body)
     m.response.headers.SetContent(response.headers)
+    m.rawResponse = response
     if SaveToFile {
       m.createOutputFile(response.body, responseBodyOutput)
       m.createOutputFile(response.headers, responseHeadersOutput)
     }
   }
+  m.storeCurrentState()
 }
 
 // Styles vars
@@ -199,6 +203,7 @@ const (
 type mainModel struct {
 	url          *Url
   request      *Request
+  rawResponse  *Response
   response     *ResponseModel
   focusedModel FocusedModel
 
@@ -210,6 +215,7 @@ func initialModel() mainModel {
   return mainModel{
     url: InitialUrlModel(),
     request: InitialRequestModel(),
+    rawResponse: &Response{},
     response: InitialResponseModel(),
     focusedModel: FocusUrl,
   }
