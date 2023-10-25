@@ -27,6 +27,13 @@ func (m mainModel) returnCurrentValues() *CurrentState {
   }
 }
 
+func writeToFile(f *os.File, content *CurrentState) {
+  byts, err := json.Marshal(content)
+  if err != nil {
+    log.Println("Error marshilling content to JSON: ", err)
+    return 
+  }
+  _, err = f.WriteString(string(byts) + "\n")
   if err != nil {
     log.Fatal(err)
   }
@@ -78,5 +85,5 @@ func (m mainModel) storeCurrentState() {
   if err != nil {
    log.Println(err)
   }
-  writeToFile(f, "test")
+  writeToFile(f, m.returnCurrentValues())
 }
