@@ -87,3 +87,16 @@ func (m mainModel) storeCurrentState() {
   }
   writeToFile(f, m.returnCurrentValues())
 }
+
+
+func (m mainModel) stateFileExists() bool {
+  configDir, err := os.UserConfigDir()
+  if err != nil {
+    log.Println("Error finding the config dir: ", err)
+    return false
+  }
+	savedStateFile := filepath.Join(configDir, "tgorq", "state.json")
+  return fileExists(savedStateFile)
+}
+
+
