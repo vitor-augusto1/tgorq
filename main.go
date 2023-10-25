@@ -222,6 +222,9 @@ func initialModel() mainModel {
 }
 
 func (m mainModel) Init() tea.Cmd {
+  if (m.stateFileExists()) {
+    m.restorePreviousState()
+  }
 	return nil
 }
 
