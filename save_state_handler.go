@@ -16,8 +16,17 @@ type CurrentState struct {
   ResponseHeaders string     `json:"response_headers"`
 }
 
-func writeToFile(f *os.File, content string) {
-  _, err := f.WriteString(content + "\n")
+func (m mainModel) returnCurrentValues() *CurrentState {
+  return &CurrentState{
+    Method: m.url.chosenMethod,
+    Url: m.url.textInput.Value(),
+    RequestBody: m.request.body.Value(),
+    RequestHeaders: m.request.headers.Value(),
+    ResponseBody: m.rawResponse.rawResponse,
+    ResponseHeaders: m.rawResponse.headers,
+  }
+}
+
   if err != nil {
     log.Fatal(err)
   }
