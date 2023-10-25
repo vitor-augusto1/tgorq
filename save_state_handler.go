@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -33,7 +34,7 @@ func writeToFile(f *os.File, content *CurrentState) {
     log.Println("Error marshilling content to JSON: ", err)
     return 
   }
-  _, err = f.WriteString(string(byts) + "\n")
+  _, err = f.Write(byts)
   if err != nil {
     log.Fatal(err)
   }
@@ -41,7 +42,6 @@ func writeToFile(f *os.File, content *CurrentState) {
     log.Println("Error syncing the file: ", err)
     return
   }
-  defer f.Close()
 }
 
 func fileExists(path string) bool {
@@ -85,6 +85,7 @@ func (m mainModel) storeCurrentState() {
   if err != nil {
    log.Println(err)
   }
+  defer f.Close()
   writeToFile(f, m.returnCurrentValues())
 }
 
