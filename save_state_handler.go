@@ -153,6 +153,8 @@ func (m mainModel) restorePreviousState() {
   }
   log.Println("This is the current State variable: ", currentState)
 
+  m.url.httpMethodPag.Page = int(currentState.Method)
+  m.url.chosenMethod = currentState.Method
   m.url.textInput.SetValue(currentState.Url)
   m.request.body.SetValue(currentState.RequestBody)
   m.request.headers.SetValue(currentState.RequestHeaders)
