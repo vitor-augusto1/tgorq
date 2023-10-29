@@ -55,6 +55,7 @@ func fileExists(path string) bool {
   return err == nil
 }
 
+
 func (m mainModel) storeCurrentState() {
   configDir, err := os.UserConfigDir()
   if err != nil {
@@ -89,6 +90,19 @@ func (m mainModel) storeCurrentState() {
    log.Println(err)
   }
   defer f.Close()
+  fstat, _ := f.Stat()
+  if fstat.Size() != 0 {
+    err = f.Truncate(0)
+    if err != nil {
+      log.Println("Error truncating the file: ", err)
+      return
+    }
+    _, err = f.Seek(0, 0)
+    if err != nil {
+      log.Println("Error seeking the file: ", err)
+      return
+    }
+  }
   writeToFile(f, m.returnCurrentValues())
 }
 
