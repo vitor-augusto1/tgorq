@@ -30,20 +30,22 @@ func (m mainModel) returnCurrentValues() *CurrentState {
 }
 
 func writeToFile(f *os.File, content *CurrentState) {
-  byts, err := json.Marshal(content)
+  byts, err := json.MarshalIndent(content, "", " ")
   if err != nil {
     log.Println("Error marshilling content to JSON: ", err)
     return 
   }
   _, err = f.Write(byts)
   if err != nil {
-    log.Fatal(err)
+    log.Println("Error writing content to JSON file: ", err)
+    return
   }
   if err := f.Sync(); err != nil {
     log.Println("Error syncing the file: ", err)
     return
   }
 }
+
 
 func fileExists(path string) bool {
   _, err := os.Stat(path)
