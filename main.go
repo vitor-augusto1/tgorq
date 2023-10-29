@@ -26,6 +26,7 @@ var (
 // Cobra vars
 var (
   SaveToFile = false
+  SaveState = false
   rootCmd = &cobra.Command{
     Use: "tgorq",
     Short: "Make http requests from the terminal",
@@ -42,12 +43,19 @@ __/\\\\\\\\\\\\\\\________________________________________________________
         _______\///_________\////////______\/////_____\///_________________\////__
 
     A vim-like TUI (Text User Interface) that allows you to make http requests.
-    Example: ./tgorq [ -o | --enable-output ]
+    Example: ./tgorq [ -o | --enable-output ] [ -s | --save-state ]
     `,
     Run: func(cmd *cobra.Command, args []string) {
       outputFlagValue, err := cmd.Flags().GetBool("enable-output")
       if err != nil {
         log.Fatal(err)
+      }
+      saveStateFlagValue, err := cmd.Flags().GetBool("save-state")
+      if err != nil {
+        log.Fatal(err)
+      }
+      if saveStateFlagValue {
+        SaveState = true
       }
       if outputFlagValue {
         SaveToFile = true
@@ -74,6 +82,10 @@ func init() {
   rootCmd.Flags().BoolP(
     "enable-output", "o",
     false, `Stores the response body and headers in the response directory.`,
+  )
+  rootCmd.Flags().BoolP(
+    "save-state", "s",
+    false, `Save the current application state.`,
   )
 }
 
@@ -159,7 +171,9 @@ func (m mainModel) makeRequest() {
       m.createOutputFile(response.headers, responseHeadersOutput)
     }
   }
-  m.storeCurrentState()
+  if SaveState {
+    m.storeCurrentState()
+  }
 }
 
 // Styles vars
@@ -222,6 +236,9 @@ func initialModel() mainModel {
 }
 
 func (m mainModel) Init() tea.Cmd {
+  if !SaveState {
+    return nil
+  }
   if (m.stateFileExists()) {
     m.restorePreviousState()
   }
@@ -231,6 +248,7 @@ func (m mainModel) Init() tea.Cmd {
 func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
   switch msg := msg.(type) {
   case tea.WindowSizeMsg:
+    log.Println("This is the current window size: ", msg.Width, msg.Height)
     m.width = msg.Width
     m.height = msg.Height
   case tea.KeyMsg:
