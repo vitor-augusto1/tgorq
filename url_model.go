@@ -29,8 +29,8 @@ type Url struct {
 
 	textInput textinput.Model
 
-	borderStyle   lipgloss.Style
-	httpMethodPag paginator.Model
+	border   lipgloss.Style
+	httpMethodPaginator paginator.Model
 }
 
 func InitialUrlModel() *Url {
@@ -42,15 +42,15 @@ func InitialUrlModel() *Url {
 	newPaginator := paginator.New()
 	newPaginator.Type = paginator.Dots
 	newPaginator.SetTotalPages(len(methodsSlice))
-	newPaginator.ActiveDot = inactivePaginatorStyle
-	newPaginator.InactiveDot = paginatorStyleInactive
+	newPaginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
+	newPaginator.InactiveDot = StyleInactivePageOnPaginator
 
 	return &Url{
 		methods:       methodsSlice,
 		chosenMethod:  GET,
 		textInput:     newTextInput,
-		borderStyle:   borderStyle,
-		httpMethodPag: newPaginator,
+		border:   StyleRequestBorder,
+		httpMethodPaginator: newPaginator,
 	}
 }
 
@@ -63,19 +63,19 @@ func (u *Url) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (u Url) View() string {
-	var sBuilder strings.Builder
+	var stringBuilder strings.Builder
 
-	start, end := u.httpMethodPag.GetSliceBounds(len(u.methods))
+	start, end := u.httpMethodPaginator.GetSliceBounds(len(u.methods))
 	for _, method := range u.methods[start:end] {
-		sBuilder.WriteString("  " + string(method) + "\n")
+		stringBuilder.WriteString("  " + string(method) + "\n")
 	}
 
-	sBuilder.WriteString("  " + u.httpMethodPag.View())
+	stringBuilder.WriteString("  " + u.httpMethodPaginator.View())
 
 	s := fmt.Sprintf(
 		"\n%s\n\n%s\n",
-		sBuilder.String(),
+		stringBuilder.String(),
 		u.textInput.View(),
 	)
-	return u.borderStyle.Render(s)
+	return u.border.Render(s)
 }
