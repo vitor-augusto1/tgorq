@@ -1,6 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"log"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/paginator"
@@ -57,4 +61,20 @@ func (rs ResponseModel) View() string {
 
 	sBuilder.WriteString("  " + rs.paginator.View())
 	return rs.border.Render(sBuilder.String())
+}
+
+func (m mainModel) saveResponseOutputToFile(content string, pathname string) {
+	dir := filepath.Dir(pathname)
+	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+		log.Println(err)
+		return
+	}
+	file, err := os.Create(pathname)
+	if err != nil {
+		log.Println("Error creating the output file: ", err)
+		return
+	}
+	defer file.Close()
+
+	fmt.Fprintf(file, "%s", content)
 }

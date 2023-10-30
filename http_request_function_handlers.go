@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -205,4 +206,69 @@ func handleDeleteMethod(url string, headers []byte) (*Response, error) {
 		statusCode:  responseStatusCode,
 	}
 	return newResponse, nil
+}
+
+func (m mainModel) executeRequest() {
+	url := m.url.textInput.Value()
+	chosenHttpMethod := m.url.chosenMethod
+	bodyString := m.request.body.Value()
+	headerString := m.request.headers.Value()
+	byteBody := bytes.NewBuffer([]byte(bodyString))
+	byteHeaders := []byte(headerString)
+	if chosenHttpMethod == GET {
+		response, err := handleGetMethod(url)
+		if err != nil {
+			m.response.body.SetContent(err.Error())
+			return
+		}
+		m.response.body.SetContent(response.body)
+		m.response.headers.SetContent(response.headers)
+		m.rawResponse = response
+		if SaveToFileFlag {
+			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
+			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
+		}
+	} else if chosenHttpMethod == POST {
+		response, err := handlePostMethod(url, byteBody, byteHeaders)
+		if err != nil {
+			m.response.body.SetContent(err.Error())
+			return
+		}
+		m.response.body.SetContent(response.body)
+		m.response.headers.SetContent(response.headers)
+		m.rawResponse = response
+		if SaveToFileFlag {
+			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
+			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
+		}
+	} else if chosenHttpMethod == PUT {
+		response, err := handlePutMethod(url, byteBody, byteHeaders)
+		if err != nil {
+			m.response.body.SetContent(err.Error())
+			return
+		}
+		m.response.body.SetContent(response.body)
+		m.response.headers.SetContent(response.headers)
+		m.rawResponse = response
+		if SaveToFileFlag {
+			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
+			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
+		}
+	} else if chosenHttpMethod == DELETE {
+		response, err := handleDeleteMethod(url, byteHeaders)
+		if err != nil {
+			m.response.body.SetContent(err.Error())
+			return
+		}
+		m.response.body.SetContent(response.body)
+		m.response.headers.SetContent(response.headers)
+		m.rawResponse = response
+		if SaveToFileFlag {
+			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
+			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
+		}
+	}
+	if SaveStateFlag {
+		m.storeCurrentState()
+	}
 }

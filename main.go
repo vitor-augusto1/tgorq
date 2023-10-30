@@ -1,11 +1,9 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 
 	"github.com/charmbracelet/bubbles/cursor"
 	tea "github.com/charmbracelet/bubbletea"
@@ -17,6 +15,37 @@ import (
 func main() {
 	Execute()
 }
+
+// Styles vars
+var (
+	color                = termenv.EnvColorProfile().Color
+	help                 = termenv.Style{}.Foreground(color("241")).Styled
+	grey                 = lipgloss.Color("#6c6c6c")
+	StyleActivePageOnPaginator = lipgloss.
+				NewStyle().
+				Foreground(lipgloss.Color("#76fd47")).
+				Render("•")
+	StyleInactivecCurrentPageOnPaginator = lipgloss.
+				NewStyle().
+				Foreground(lipgloss.Color("#6c6c6c")).
+				Render("•")
+	StyleInactivePageOnPaginator = lipgloss.
+				NewStyle().
+				Foreground(grey).
+				Render("-")
+	StyleRequestBorder = lipgloss.NewStyle().
+			BorderForeground(lipgloss.Color("5")).
+			BorderStyle(lipgloss.RoundedBorder()).
+			Padding(0).Width(160).Height(1)
+	StyleResponseBorder = lipgloss.NewStyle().
+				BorderForeground(lipgloss.Color("10")).
+				BorderStyle(lipgloss.RoundedBorder()).
+				Padding(0).Width(160).Height(1)
+	StyleInactiveBorder = lipgloss.NewStyle().
+				BorderForeground(lipgloss.Color("#6c6c6c")).
+				BorderStyle(lipgloss.RoundedBorder()).
+				Padding(0).Width(160).Height(1)
+)
 
 // output file vars
 var (
@@ -95,118 +124,6 @@ func Execute() {
 		log.Fatal(err)
 	}
 }
-
-func (m mainModel) saveResponseOutputToFile(content string, pathname string) {
-	dir := filepath.Dir(pathname)
-	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
-		log.Println(err)
-		return
-	}
-	file, err := os.Create(pathname)
-	if err != nil {
-		log.Println("Error creating the output file: ", err)
-		return
-	}
-	defer file.Close()
-
-	fmt.Fprintf(file, "%s", content)
-}
-
-func (m mainModel) executeRequest() {
-	url := m.url.textInput.Value()
-	chosenHttpMethod := m.url.chosenMethod
-	bodyString := m.request.body.Value()
-	headerString := m.request.headers.Value()
-	byteBody := bytes.NewBuffer([]byte(bodyString))
-	byteHeaders := []byte(headerString)
-	if chosenHttpMethod == GET {
-		response, err := handleGetMethod(url)
-		if err != nil {
-			m.response.body.SetContent(err.Error())
-			return
-		}
-		m.response.body.SetContent(response.body)
-		m.response.headers.SetContent(response.headers)
-		m.rawResponse = response
-		if SaveToFileFlag {
-			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
-			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
-		}
-	} else if chosenHttpMethod == POST {
-		response, err := handlePostMethod(url, byteBody, byteHeaders)
-		if err != nil {
-			m.response.body.SetContent(err.Error())
-			return
-		}
-		m.response.body.SetContent(response.body)
-		m.response.headers.SetContent(response.headers)
-		m.rawResponse = response
-		if SaveToFileFlag {
-			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
-			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
-		}
-	} else if chosenHttpMethod == PUT {
-		response, err := handlePutMethod(url, byteBody, byteHeaders)
-		if err != nil {
-			m.response.body.SetContent(err.Error())
-			return
-		}
-		m.response.body.SetContent(response.body)
-		m.response.headers.SetContent(response.headers)
-		m.rawResponse = response
-		if SaveToFileFlag {
-			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
-			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
-		}
-	} else if chosenHttpMethod == DELETE {
-		response, err := handleDeleteMethod(url, byteHeaders)
-		if err != nil {
-			m.response.body.SetContent(err.Error())
-			return
-		}
-		m.response.body.SetContent(response.body)
-		m.response.headers.SetContent(response.headers)
-		m.rawResponse = response
-		if SaveToFileFlag {
-			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
-			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
-		}
-	}
-	if SaveStateFlag {
-		m.storeCurrentState()
-	}
-}
-
-// Styles vars
-var (
-	color                = termenv.EnvColorProfile().Color
-	help                 = termenv.Style{}.Foreground(color("241")).Styled
-	grey                 = lipgloss.Color("#6c6c6c")
-	StyleActivePageOnPaginator = lipgloss.
-				NewStyle().
-				Foreground(lipgloss.Color("#76fd47")).
-				Render("•")
-	StyleInactivecCurrentPageOnPaginator = lipgloss.
-				NewStyle().
-				Foreground(lipgloss.Color("#6c6c6c")).
-				Render("•")
-	StyleInactivePageOnPaginator = lipgloss.
-				NewStyle().
-				Foreground(grey).
-				Render("-")
-	StyleRequestBorder = lipgloss.NewStyle().
-			BorderForeground(lipgloss.Color("5")).
-			BorderStyle(lipgloss.RoundedBorder()).
-			Padding(0).Width(160).Height(1)
-	StyleResponseBorder = lipgloss.NewStyle().
-				BorderForeground(lipgloss.Color("10")).
-				BorderStyle(lipgloss.RoundedBorder()).
-				Padding(0).Width(160).Height(1)
-	StyleInactiveBorder = lipgloss.NewStyle().
-				BorderForeground(lipgloss.Color("#6c6c6c")).
-				BorderStyle(lipgloss.RoundedBorder()).
-				Padding(0).Width(160).Height(1)
-)
 
 type FocusedModel int
 
