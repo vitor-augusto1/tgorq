@@ -28,7 +28,7 @@ func (m mainModel) returnCurrentValues() *CurrentState {
 	}
 }
 
-func writeToFile(f *os.File, content *CurrentState) {
+func writeCurrentStateToFile(f *os.File, content *CurrentState) {
 	bytes, err := json.MarshalIndent(content, "", " ")
 	if err != nil {
 		log.Println("Error marshilling content to JSON: ", err)
@@ -100,7 +100,7 @@ func (m mainModel) storeCurrentState() {
 			return
 		}
 	}
-	writeToFile(f, m.returnCurrentValues())
+	writeCurrentStateToFile(f, m.returnCurrentValues())
 }
 
 func (m mainModel) stateFileExists() bool {

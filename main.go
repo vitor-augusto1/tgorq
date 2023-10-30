@@ -96,7 +96,7 @@ func Execute() {
 	}
 }
 
-func (m mainModel) createOutputFile(content string, pathname string) {
+func (m mainModel) saveResponseOutputToFile(content string, pathname string) {
 	dir := filepath.Dir(pathname)
 	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
 		log.Println(err)
@@ -112,7 +112,7 @@ func (m mainModel) createOutputFile(content string, pathname string) {
 	fmt.Fprintf(file, "%s", content)
 }
 
-func (m mainModel) makeRequest() {
+func (m mainModel) executeRequest() {
 	url := m.url.textInput.Value()
 	chosenHttpMethod := m.url.chosenMethod
 	bodyString := m.request.body.Value()
@@ -129,8 +129,8 @@ func (m mainModel) makeRequest() {
 		m.response.headers.SetContent(response.headers)
 		m.rawResponse = response
 		if SaveToFileFlag {
-			m.createOutputFile(response.body, responseBodyOutputPath)
-			m.createOutputFile(response.headers, responseHeadersOutputPath)
+			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
+			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
 		}
 	} else if chosenHttpMethod == POST {
 		response, err := handlePostMethod(url, byteBody, byteHeaders)
@@ -142,8 +142,8 @@ func (m mainModel) makeRequest() {
 		m.response.headers.SetContent(response.headers)
 		m.rawResponse = response
 		if SaveToFileFlag {
-			m.createOutputFile(response.body, responseBodyOutputPath)
-			m.createOutputFile(response.headers, responseHeadersOutputPath)
+			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
+			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
 		}
 	} else if chosenHttpMethod == PUT {
 		response, err := handlePutMethod(url, byteBody, byteHeaders)
@@ -155,8 +155,8 @@ func (m mainModel) makeRequest() {
 		m.response.headers.SetContent(response.headers)
 		m.rawResponse = response
 		if SaveToFileFlag {
-			m.createOutputFile(response.body, responseBodyOutputPath)
-			m.createOutputFile(response.headers, responseHeadersOutputPath)
+			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
+			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
 		}
 	} else if chosenHttpMethod == DELETE {
 		response, err := handleDeleteMethod(url, byteHeaders)
@@ -168,8 +168,8 @@ func (m mainModel) makeRequest() {
 		m.response.headers.SetContent(response.headers)
 		m.rawResponse = response
 		if SaveToFileFlag {
-			m.createOutputFile(response.body, responseBodyOutputPath)
-			m.createOutputFile(response.headers, responseHeadersOutputPath)
+			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
+			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
 		}
 	}
 	if SaveStateFlag {
@@ -260,7 +260,7 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		// Quit the program if its not focus on the URL model
 		case tea.KeyCtrlG.String():
-			m.makeRequest()
+			m.executeRequest()
 			m.response.body.GotoTop()
 		case tea.KeyCtrlC.String():
 			return m, tea.Quit
