@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	req                *http.Request
-	reqHeaders         map[string]string
-	resp               *http.Response
+	request                *http.Request
+	requestHeaders         map[string]string
+	response               *http.Response
 	responseBody       []byte
 	responseStatusCode int
 	err                error
@@ -24,34 +24,34 @@ type Response struct {
 }
 
 func handleGetMethod(url string) (*Response, error) {
-	req, err = http.NewRequest(GET.String(), url, nil)
+	request, err = http.NewRequest(GET.String(), url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err = http.DefaultClient.Do(req)
+	response, err = http.DefaultClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
 
-	responseBody, err = io.ReadAll(resp.Body)
+	responseBody, err = io.ReadAll(response.Body)
 	if err != nil {
 		return nil, err
 	}
 
 	var responseHeaders string
-	for k, v := range resp.Header {
+	for k, v := range response.Header {
 		responseHeaders += fmt.Sprintf(
 			"%q : %q\n", k, v,
 		)
 	}
-	responseStatusCode = resp.StatusCode
+	responseStatusCode = response.StatusCode
 	responseBodyString := fmt.Sprintf(
 		"%d\n\n%s",
 		responseStatusCode,
 		string(responseBody),
 	)
-	defer resp.Body.Close()
+	defer response.Body.Close()
 
 	newResponse := &Response{
 		rawResponse: string(responseBody),
@@ -63,43 +63,43 @@ func handleGetMethod(url string) (*Response, error) {
 }
 
 func handlePostMethod(url string, body io.Reader, headers []byte) (*Response, error) {
-	req, err = http.NewRequest(POST.String(), url, body)
+	request, err = http.NewRequest(POST.String(), url, body)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = json.Unmarshal(headers, &reqHeaders); err != nil {
+	if err = json.Unmarshal(headers, &requestHeaders); err != nil {
 		return nil, err
 	}
 
-	for key, value := range reqHeaders {
-		req.Header.Set(key, value)
+	for key, value := range requestHeaders {
+		request.Header.Set(key, value)
 	}
 
-	resp, err = http.DefaultClient.Do(req)
+	response, err = http.DefaultClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
 
-	responseBody, err = io.ReadAll(resp.Body)
+	responseBody, err = io.ReadAll(response.Body)
 	if err != nil {
 		return nil, err
 	}
 
 	var responseHeaders string
-	for k, v := range resp.Header {
+	for k, v := range response.Header {
 		responseHeaders += fmt.Sprintf(
 			"%q : %q\n", k, v,
 		)
 	}
 
-	responseStatusCode = resp.StatusCode
+	responseStatusCode = response.StatusCode
 	responseBodyString := fmt.Sprintf(
 		"%d\n\n%s",
 		responseStatusCode,
 		string(responseBody),
 	)
-	defer resp.Body.Close()
+	defer response.Body.Close()
 
 	newResponse := &Response{
 		rawResponse: string(responseBody),
@@ -111,44 +111,44 @@ func handlePostMethod(url string, body io.Reader, headers []byte) (*Response, er
 }
 
 func handlePutMethod(url string, body io.Reader, headers []byte) (*Response, error) {
-	req, err = http.NewRequest(PUT.String(), url, body)
+	request, err = http.NewRequest(PUT.String(), url, body)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = json.Unmarshal(headers, &reqHeaders); err != nil {
+	if err = json.Unmarshal(headers, &requestHeaders); err != nil {
 		return nil, err
 	}
 
-	for key, value := range reqHeaders {
-		req.Header.Set(key, value)
+	for key, value := range requestHeaders {
+		request.Header.Set(key, value)
 	}
 
-	resp, err = http.DefaultClient.Do(req)
+	response, err = http.DefaultClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
 
-	responseBody, err = io.ReadAll(resp.Body)
+	responseBody, err = io.ReadAll(response.Body)
 	if err != nil {
 		return nil, err
 	}
 
 	var responseHeaders string
-	for k, v := range resp.Header {
+	for k, v := range response.Header {
 		responseHeaders += fmt.Sprintf(
 			"%q : %q\n", k, v,
 		)
 	}
 
-	responseStatusCode = resp.StatusCode
+	responseStatusCode = response.StatusCode
 	responseBodyString := fmt.Sprintf(
 		"%d\n\n%s",
 		responseStatusCode,
 		string(responseBody),
 	)
 
-	defer resp.Body.Close()
+	defer response.Body.Close()
 
 	newResponse := &Response{
 		rawResponse: string(responseBody),
@@ -160,43 +160,43 @@ func handlePutMethod(url string, body io.Reader, headers []byte) (*Response, err
 }
 
 func handleDeleteMethod(url string, headers []byte) (*Response, error) {
-	req, err = http.NewRequest(DELETE.String(), url, nil)
+	request, err = http.NewRequest(DELETE.String(), url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = json.Unmarshal(headers, &reqHeaders); err != nil {
+	if err = json.Unmarshal(headers, &requestHeaders); err != nil {
 		return nil, err
 	}
 
-	for key, value := range reqHeaders {
-		req.Header.Set(key, value)
+	for key, value := range requestHeaders {
+		request.Header.Set(key, value)
 	}
 
-	resp, err = http.DefaultClient.Do(req)
+	response, err = http.DefaultClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
 
-	responseBody, err = io.ReadAll(resp.Body)
+	responseBody, err = io.ReadAll(response.Body)
 	if err != nil {
 		return nil, err
 	}
 
 	var responseHeaders string
-	for k, v := range resp.Header {
+	for k, v := range response.Header {
 		responseHeaders += fmt.Sprintf(
 			"%q : %q\n", k, v,
 		)
 	}
 
-	responseStatusCode = resp.StatusCode
+	responseStatusCode = response.StatusCode
 	responseBodyString := fmt.Sprintf(
 		"%d\n\n%s",
 		responseStatusCode,
 		string(responseBody),
 	)
-	defer resp.Body.Close()
+	defer response.Body.Close()
 
 	newResponse := &Response{
 		rawResponse: string(responseBody),

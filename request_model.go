@@ -30,7 +30,7 @@ func InitialRequestModel() *Request {
 		body:    bodyTextArea,
 		headers: headersTextArea,
 
-		border: borderStyle,
+		border: StyleRequestBorder,
 	}
 }
 
@@ -43,9 +43,9 @@ func (rq Request) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (rq Request) View() string {
-	var sBuilder strings.Builder
+	var stringBuilder strings.Builder
 
-	sBuilder.WriteString(rq.body.View() + "\n\n")
-	sBuilder.WriteString(rq.headers.View())
-	return rq.border.Render(sBuilder.String())
+	stringBuilder.WriteString(rq.body.View() + "\n\n")
+	stringBuilder.WriteString(rq.headers.View())
+	return rq.border.Render(stringBuilder.String())
 }

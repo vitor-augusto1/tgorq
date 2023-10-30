@@ -29,12 +29,12 @@ func (m mainModel) returnCurrentValues() *CurrentState {
 }
 
 func writeToFile(f *os.File, content *CurrentState) {
-	byts, err := json.MarshalIndent(content, "", " ")
+	bytes, err := json.MarshalIndent(content, "", " ")
 	if err != nil {
 		log.Println("Error marshilling content to JSON: ", err)
 		return
 	}
-	_, err = f.Write(byts)
+	_, err = f.Write(bytes)
 	if err != nil {
 		log.Println("Error writing content to JSON file: ", err)
 		return
@@ -54,14 +54,14 @@ func fileExists(path string) bool {
 }
 
 func (m mainModel) storeCurrentState() {
-	configDir, err := os.UserConfigDir()
+	userConfigDir, err := os.UserConfigDir()
 	if err != nil {
 		log.Println("Error finding the config dir: ", err)
 		return
 	}
 
-	filePath := filepath.Join(configDir, "tgorq")
-	savedStateFile := filepath.Join(configDir, "tgorq", "state.json")
+	filePath := filepath.Join(userConfigDir, "tgorq")
+	savedStateFile := filepath.Join(userConfigDir, "tgorq", "state.json")
 
 	// Check if the path exists. If not, create it.
 	if !fileExists(filePath) {
@@ -104,23 +104,23 @@ func (m mainModel) storeCurrentState() {
 }
 
 func (m mainModel) stateFileExists() bool {
-	configDir, err := os.UserConfigDir()
+	userConfigDir, err := os.UserConfigDir()
 	if err != nil {
 		log.Println("Error finding the config dir: ", err)
 		return false
 	}
-	savedStateFile := filepath.Join(configDir, "tgorq", "state.json")
+	savedStateFile := filepath.Join(userConfigDir, "tgorq", "state.json")
 	return fileExists(savedStateFile)
 }
 
 func (m mainModel) restorePreviousState() {
-	configDir, err := os.UserConfigDir()
+	userConfigDir, err := os.UserConfigDir()
 	if err != nil {
 		log.Println("Error finding the config dir: ", err)
 		return
 	}
-	filePath := filepath.Join(configDir, "tgorq")
-	savedStateFile := filepath.Join(configDir, "tgorq", "state.json")
+	filePath := filepath.Join(userConfigDir, "tgorq")
+	savedStateFile := filepath.Join(userConfigDir, "tgorq", "state.json")
 
 	// Check if the path exists. If not, create it.
 	if !fileExists(filePath) {
@@ -148,7 +148,7 @@ func (m mainModel) restorePreviousState() {
 	}
 	log.Println("This is the current State variable: ", currentState)
 
-	m.url.httpMethodPag.Page = int(currentState.Method)
+	m.url.httpMethodPaginator.Page = int(currentState.Method)
 	m.url.chosenMethod = currentState.Method
 	m.url.textInput.SetValue(currentState.Url)
 	m.request.body.SetValue(currentState.RequestBody)

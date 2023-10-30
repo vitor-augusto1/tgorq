@@ -20,14 +20,14 @@ func main() {
 
 // output file vars
 var (
-	responseBodyOutput    = "./response/body.txt"
-	responseHeadersOutput = "./response/headers.txt"
+	responseBodyOutputPath    = "./response/body.txt"
+	responseHeadersOutputPath = "./response/headers.txt"
 )
 
 // Cobra vars
 var (
-	SaveToFile = false
-	SaveState  = false
+	SaveToFileFlag = false
+	SaveStateFlag  = false
 	rootCmd    = &cobra.Command{
 		Use:   "tgorq",
 		Short: "Make http requests from the terminal",
@@ -56,10 +56,10 @@ __/\\\\\\\\\\\\\\\________________________________________________________
 				log.Fatal(err)
 			}
 			if saveStateFlagValue {
-				SaveState = true
+				SaveStateFlag = true
 			}
 			if outputFlagValue {
-				SaveToFile = true
+				SaveToFileFlag = true
 			}
 			p := tea.NewProgram(
 				initialModel(),
@@ -128,9 +128,9 @@ func (m mainModel) makeRequest() {
 		m.response.body.SetContent(response.body)
 		m.response.headers.SetContent(response.headers)
 		m.rawResponse = response
-		if SaveToFile {
-			m.createOutputFile(response.body, responseBodyOutput)
-			m.createOutputFile(response.headers, responseHeadersOutput)
+		if SaveToFileFlag {
+			m.createOutputFile(response.body, responseBodyOutputPath)
+			m.createOutputFile(response.headers, responseHeadersOutputPath)
 		}
 	} else if chosenHttpMethod == POST {
 		response, err := handlePostMethod(url, byteBody, byteHeaders)
@@ -141,9 +141,9 @@ func (m mainModel) makeRequest() {
 		m.response.body.SetContent(response.body)
 		m.response.headers.SetContent(response.headers)
 		m.rawResponse = response
-		if SaveToFile {
-			m.createOutputFile(response.body, responseBodyOutput)
-			m.createOutputFile(response.headers, responseHeadersOutput)
+		if SaveToFileFlag {
+			m.createOutputFile(response.body, responseBodyOutputPath)
+			m.createOutputFile(response.headers, responseHeadersOutputPath)
 		}
 	} else if chosenHttpMethod == PUT {
 		response, err := handlePutMethod(url, byteBody, byteHeaders)
@@ -154,9 +154,9 @@ func (m mainModel) makeRequest() {
 		m.response.body.SetContent(response.body)
 		m.response.headers.SetContent(response.headers)
 		m.rawResponse = response
-		if SaveToFile {
-			m.createOutputFile(response.body, responseBodyOutput)
-			m.createOutputFile(response.headers, responseHeadersOutput)
+		if SaveToFileFlag {
+			m.createOutputFile(response.body, responseBodyOutputPath)
+			m.createOutputFile(response.headers, responseHeadersOutputPath)
 		}
 	} else if chosenHttpMethod == DELETE {
 		response, err := handleDeleteMethod(url, byteHeaders)
@@ -167,12 +167,12 @@ func (m mainModel) makeRequest() {
 		m.response.body.SetContent(response.body)
 		m.response.headers.SetContent(response.headers)
 		m.rawResponse = response
-		if SaveToFile {
-			m.createOutputFile(response.body, responseBodyOutput)
-			m.createOutputFile(response.headers, responseHeadersOutput)
+		if SaveToFileFlag {
+			m.createOutputFile(response.body, responseBodyOutputPath)
+			m.createOutputFile(response.headers, responseHeadersOutputPath)
 		}
 	}
-	if SaveState {
+	if SaveStateFlag {
 		m.storeCurrentState()
 	}
 }
@@ -182,27 +182,27 @@ var (
 	color                = termenv.EnvColorProfile().Color
 	help                 = termenv.Style{}.Foreground(color("241")).Styled
 	grey                 = lipgloss.Color("#6c6c6c")
-	activePaginatorStyle = lipgloss.
+	StyleActivePageOnPaginator = lipgloss.
 				NewStyle().
 				Foreground(lipgloss.Color("#76fd47")).
 				Render("•")
-	inactivePaginatorStyle = lipgloss.
+	StyleInactivecCurrentPageOnPaginator = lipgloss.
 				NewStyle().
 				Foreground(lipgloss.Color("#6c6c6c")).
 				Render("•")
-	paginatorStyleInactive = lipgloss.
+	StyleInactivePageOnPaginator = lipgloss.
 				NewStyle().
 				Foreground(grey).
 				Render("-")
-	borderStyle = lipgloss.NewStyle().
+	StyleRequestBorder = lipgloss.NewStyle().
 			BorderForeground(lipgloss.Color("5")).
 			BorderStyle(lipgloss.RoundedBorder()).
 			Padding(0).Width(160).Height(1)
-	responseBorderStyle = lipgloss.NewStyle().
+	StyleResponseBorder = lipgloss.NewStyle().
 				BorderForeground(lipgloss.Color("10")).
 				BorderStyle(lipgloss.RoundedBorder()).
 				Padding(0).Width(160).Height(1)
-	inactiveModelStyle = lipgloss.NewStyle().
+	StyleInactiveBorder = lipgloss.NewStyle().
 				BorderForeground(lipgloss.Color("#6c6c6c")).
 				BorderStyle(lipgloss.RoundedBorder()).
 				Padding(0).Width(160).Height(1)
@@ -211,11 +211,11 @@ var (
 type FocusedModel int
 
 const (
-	FocusUrl FocusedModel = 1 << iota
-	FocusMethod
-	FocusRequestB
-	FocusRequestH
-	FocusResponse
+	FocusUrlModel FocusedModel = 1 << iota
+	FocusMethodModel
+	FocusRequestBodyModel
+	FocusRequestHeaderModel
+	FocusResponseModel
 )
 
 type mainModel struct {
@@ -235,12 +235,12 @@ func initialModel() mainModel {
 		request:      InitialRequestModel(),
 		rawResponse:  &Response{},
 		response:     InitialResponseModel(),
-		focusedModel: FocusUrl,
+		focusedModel: FocusUrlModel,
 	}
 }
 
 func (m mainModel) Init() tea.Cmd {
-	if !SaveState {
+	if !SaveStateFlag {
 		return nil
 	}
 	if m.stateFileExists() {
@@ -266,73 +266,73 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		// Focus on the URL model
 		case tea.KeyCtrlI.String():
-			m.focusedModel = FocusMethod
-			m.response.border = inactiveModelStyle
-			m.response.paginator.ActiveDot = inactivePaginatorStyle
-			m.url.httpMethodPag.ActiveDot = activePaginatorStyle
+			m.focusedModel = FocusMethodModel
+			m.response.border = StyleInactiveBorder
+			m.response.paginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
+			m.url.httpMethodPaginator.ActiveDot = StyleActivePageOnPaginator
 			return m, nil
 		case tea.KeyCtrlU.String():
 			m.url.textInput.Cursor.SetMode(cursor.CursorBlink)
 			m.request.body.Cursor.SetMode(cursor.CursorHide)
 			m.request.headers.Cursor.SetMode(cursor.CursorHide)
-			m.response.border = inactiveModelStyle
-			m.response.paginator.ActiveDot = inactivePaginatorStyle
-			m.url.httpMethodPag.ActiveDot = inactivePaginatorStyle
-			m.focusedModel = FocusUrl
+			m.response.border = StyleInactiveBorder
+			m.response.paginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
+			m.url.httpMethodPaginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
+			m.focusedModel = FocusUrlModel
 			return m, nil
 		case tea.KeyCtrlB.String():
 			m.request.body.Cursor.SetMode(cursor.CursorBlink)
 			m.url.textInput.Cursor.SetMode(cursor.CursorHide)
 			m.request.headers.Cursor.SetMode(cursor.CursorHide)
-			m.response.border = inactiveModelStyle
-			m.response.paginator.ActiveDot = inactivePaginatorStyle
-			m.url.httpMethodPag.ActiveDot = inactivePaginatorStyle
+			m.response.border = StyleInactiveBorder
+			m.response.paginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
+			m.url.httpMethodPaginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
 			m.request.body.Cursor.Focus()
-			m.focusedModel = FocusRequestB
+			m.focusedModel = FocusRequestBodyModel
 			return m, nil
 		case tea.KeyCtrlR.String():
 			m.request.headers.Cursor.SetMode(cursor.CursorBlink)
 			m.url.textInput.Cursor.SetMode(cursor.CursorHide)
 			m.request.body.Cursor.SetMode(cursor.CursorHide)
 			m.request.headers.Cursor.Focus()
-			m.response.border = inactiveModelStyle
-			m.response.paginator.ActiveDot = inactivePaginatorStyle
-			m.url.httpMethodPag.ActiveDot = inactivePaginatorStyle
-			m.focusedModel = FocusRequestH
+			m.response.border = StyleInactiveBorder
+			m.response.paginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
+			m.url.httpMethodPaginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
+			m.focusedModel = FocusRequestHeaderModel
 			return m, nil
 		case tea.KeyCtrlS.String():
 			m.url.textInput.Cursor.SetMode(cursor.CursorHide)
 			m.request.body.Cursor.SetMode(cursor.CursorHide)
 			m.request.headers.Cursor.SetMode(cursor.CursorHide)
-			m.response.border = responseBorderStyle
-			m.response.paginator.ActiveDot = activePaginatorStyle
-			m.url.httpMethodPag.ActiveDot = inactivePaginatorStyle
-			m.focusedModel = FocusResponse
+			m.response.border = StyleResponseBorder
+			m.response.paginator.ActiveDot = StyleActivePageOnPaginator
+			m.url.httpMethodPaginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
+			m.focusedModel = FocusResponseModel
 			return m, nil
 		default:
 			// Handling each focused model
 			switch m.focusedModel {
 			// Updating the URL
-			case FocusUrl:
+			case FocusUrlModel:
 				m.url.textInput, _ = m.url.textInput.Update(msg)
 				return m, nil
-			case FocusMethod:
+			case FocusMethodModel:
 				// Update the http method model
-				m.url.httpMethodPag, _ = m.url.httpMethodPag.Update(msg)
-				currentPage := m.url.httpMethodPag.Page
+				m.url.httpMethodPaginator, _ = m.url.httpMethodPaginator.Update(msg)
+				currentPage := m.url.httpMethodPaginator.Page
 				m.url.chosenMethod = httpMethod(currentPage)
 				return m, nil
-			case FocusRequestB:
+			case FocusRequestBodyModel:
 				// Now change the focus to the request body textarea
 				m.request.body.Focus()
 				m.request.body, _ = m.request.body.Update(msg)
 				return m, nil
-			case FocusRequestH:
+			case FocusRequestHeaderModel:
 				// Now change the focus to the request headers textarea
 				m.request.headers.Focus()
 				m.request.headers, _ = m.request.headers.Update(msg)
 				return m, nil
-			case FocusResponse:
+			case FocusResponseModel:
 				var currentPage int = m.response.paginator.Page
 				switch msg.String() {
 				case tea.KeyLeft.String(), tea.KeyRight.String(), "l", "h":
