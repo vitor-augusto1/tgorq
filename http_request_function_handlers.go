@@ -216,7 +216,6 @@ func handleDeleteMethod(requestS RequestStruct) (*Response, error) {
 	return newResponse, nil
 }
 
-func (m mainModel) executeRequest() {
 func (m mainModel) returnRequestStruct() RequestStruct {
 	url := m.url.textInput.Value()
 	chosenHttpMethod := m.url.chosenMethod
@@ -224,62 +223,6 @@ func (m mainModel) returnRequestStruct() RequestStruct {
 	headerString := m.request.headers.Value()
 	byteBody := bytes.NewBuffer([]byte(bodyString))
 	byteHeaders := []byte(headerString)
-	if chosenHttpMethod == GET {
-		response, err := handleGetMethod(url)
-		if err != nil {
-			m.response.body.SetContent(err.Error())
-			return
-		}
-		m.response.body.SetContent(response.body)
-		m.response.headers.SetContent(response.headers)
-		m.rawResponse = response
-		if SaveToFileFlag {
-			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
-			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
-		}
-	} else if chosenHttpMethod == POST {
-		response, err := handlePostMethod(url, byteBody, byteHeaders)
-		if err != nil {
-			m.response.body.SetContent(err.Error())
-			return
-		}
-		m.response.body.SetContent(response.body)
-		m.response.headers.SetContent(response.headers)
-		m.rawResponse = response
-		if SaveToFileFlag {
-			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
-			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
-		}
-	} else if chosenHttpMethod == PUT {
-		response, err := handlePutMethod(url, byteBody, byteHeaders)
-		if err != nil {
-			m.response.body.SetContent(err.Error())
-			return
-		}
-		m.response.body.SetContent(response.body)
-		m.response.headers.SetContent(response.headers)
-		m.rawResponse = response
-		if SaveToFileFlag {
-			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
-			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
-		}
-	} else if chosenHttpMethod == DELETE {
-		response, err := handleDeleteMethod(url, byteHeaders)
-		if err != nil {
-			m.response.body.SetContent(err.Error())
-			return
-		}
-		m.response.body.SetContent(response.body)
-		m.response.headers.SetContent(response.headers)
-		m.rawResponse = response
-		if SaveToFileFlag {
-			m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
-			m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
-		}
-	}
-	if SaveStateFlag {
-		m.storeCurrentState()
-	}
   newRequestStruct := RequestStruct{
     url: url,
     chosenMethod: chosenHttpMethod,
@@ -290,3 +233,32 @@ func (m mainModel) returnRequestStruct() RequestStruct {
   return newRequestStruct
 }
 
+func (m mainModel) setContentsOnRequestResponse() {
+  newRequestStruct := m.returnRequestStruct()
+  chosenHttpMethod := newRequestStruct.chosenMethod
+  var requestHandler = map[httpMethod]func(RequestStruct) (*Response, error) {
+    GET: handleGetMethod,
+    POST: handlePostMethod,
+    PUT: handlePutMethod,
+    DELETE: handleDeleteMethod,
+  }
+  response, err := requestHandler[chosenHttpMethod](newRequestStruct)
+  if err != nil {
+    m.response.body.SetContent(err.Error())
+    return
+  }
+  m.response.body.SetContent(response.body)
+  m.response.headers.SetContent(response.headers)
+  m.rawResponse = response
+  if SaveToFileFlag {
+    m.saveResponseOutputToFile(response.body, responseBodyOutputPath)
+    m.saveResponseOutputToFile(response.headers, responseHeadersOutputPath)
+  }
+  if SaveStateFlag {
+    m.storeCurrentState()
+  }
+}
+
+func (m mainModel) executeRequest() {
+  m.setContentsOnRequestResponse()
+}
