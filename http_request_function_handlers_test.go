@@ -8,9 +8,23 @@ import (
 	"testing"
 )
 
+func mockReturnRequestStruct(url string, method httpMethod) RequestStruct {
+  bodyString := `{"foo": "bar"}`
+  headerString := `{"Content-type": "application/json; charset=UTF-8"}`
+	byteBody := bytes.NewBuffer([]byte(bodyString))
+	byteHeaders := []byte(headerString)
+  newRequestStruct := RequestStruct {
+    url: url,
+    chosenMethod: method,
+    byteRequestBody: byteBody,
+    byteRequestHeader: byteHeaders,
+
+  }
+  return newRequestStruct
+}
+
 func TestHandleGetMethod(t *testing.T) {
 	expectedResponse := `{"data": "dummy"}`
-
 	newServer := httptest.NewServer(
 		http.HandlerFunc(
 			func(w http.ResponseWriter, r *http.Request) {
@@ -19,8 +33,8 @@ func TestHandleGetMethod(t *testing.T) {
 		),
 	)
 	defer newServer.Close()
-
-	response, _ := handleGetMethod(newServer.URL)
+  newMockedRequestStruct := mockReturnRequestStruct(newServer.URL, GET)
+	response, _ := handleGetMethod(newMockedRequestStruct)
 	if response.rawResponse != expectedResponse {
 		t.Errorf("Expected response to be %s got %s", expectedResponse, response.rawResponse)
 	}
@@ -28,18 +42,6 @@ func TestHandleGetMethod(t *testing.T) {
 
 func TestHandlePostMethod(t *testing.T) {
 	expectedResponse := `{"success": "id 101 created"}`
-	bodyString := `
-  {
-    "id": 101,
-    "title": "foo",
-    "body": "bar",
-    "userId": 1
-  }
-  `
-	headerString := `{"Content-type": "application/json; charset=UTF-8"}`
-	byteBody := bytes.NewBuffer([]byte(bodyString))
-	byteHeaders := []byte(headerString)
-
 	newServer := httptest.NewServer(
 		http.HandlerFunc(
 			func(w http.ResponseWriter, r *http.Request) {
@@ -52,8 +54,8 @@ func TestHandlePostMethod(t *testing.T) {
 		),
 	)
 	defer newServer.Close()
-
-	response, err := handlePostMethod(newServer.URL, byteBody, byteHeaders)
+  newMockedRequestStruct := mockReturnRequestStruct(newServer.URL, POST)
+	response, err := handlePostMethod(newMockedRequestStruct)
 	if err != nil {
 		t.Errorf("POST request failed: %s", err)
 		return
@@ -65,18 +67,6 @@ func TestHandlePostMethod(t *testing.T) {
 
 func TestHandlePutMethod(t *testing.T) {
 	expectedResponse := `{"success": "101 updated successfully"}`
-	bodyString := `
-  {
-    "id": 101,
-    "title": "bar",
-    "body": "foo",
-    "userId": 1
-  }
-  `
-	headerString := `{"Content-type": "application/json; charset=UTF-8"}`
-	byteBody := bytes.NewBuffer([]byte(bodyString))
-	byteHeaders := []byte(headerString)
-
 	newServer := httptest.NewServer(
 		http.HandlerFunc(
 			func(w http.ResponseWriter, r *http.Request) {
@@ -89,8 +79,8 @@ func TestHandlePutMethod(t *testing.T) {
 		),
 	)
 	defer newServer.Close()
-
-	response, err := handlePutMethod(newServer.URL, byteBody, byteHeaders)
+  newMockedRequestStruct := mockReturnRequestStruct(newServer.URL, PUT)
+	response, err := handlePutMethod(newMockedRequestStruct)
 	if err != nil {
 		t.Errorf("PUT request failed: %s", err)
 		return
@@ -102,9 +92,6 @@ func TestHandlePutMethod(t *testing.T) {
 
 func TestHandleDeleteMethod(t *testing.T) {
 	expectedResponse := `{"success": "101 deleted successfully"}`
-	headerString := `{"Content-type": "application/json; charset=UTF-8"}`
-	byteHeaders := []byte(headerString)
-
 	newServer := httptest.NewServer(
 		http.HandlerFunc(
 			func(w http.ResponseWriter, r *http.Request) {
@@ -117,8 +104,8 @@ func TestHandleDeleteMethod(t *testing.T) {
 		),
 	)
 	defer newServer.Close()
-
-	response, err := handleDeleteMethod(newServer.URL, byteHeaders)
+  newMockedRequestStruct := mockReturnRequestStruct(newServer.URL, DELETE)
+	response, err := handleDeleteMethod(newMockedRequestStruct)
 	if err != nil {
 		t.Errorf("Delete request failed: %s", err)
 		return
