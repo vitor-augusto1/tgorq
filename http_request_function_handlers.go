@@ -217,6 +217,7 @@ func handleDeleteMethod(requestS RequestStruct) (*Response, error) {
 }
 
 func (m mainModel) executeRequest() {
+func (m mainModel) returnRequestStruct() RequestStruct {
 	url := m.url.textInput.Value()
 	chosenHttpMethod := m.url.chosenMethod
 	bodyString := m.request.body.Value()
@@ -279,4 +280,13 @@ func (m mainModel) executeRequest() {
 	if SaveStateFlag {
 		m.storeCurrentState()
 	}
+  newRequestStruct := RequestStruct{
+    url: url,
+    chosenMethod: chosenHttpMethod,
+    byteRequestBody: byteBody,
+    byteRequestHeader: byteHeaders,
+
+  }
+  return newRequestStruct
 }
+
