@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/charmbracelet/bubbles/cursor"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
@@ -183,49 +182,15 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		// Focus on the URL model
 		case tea.KeyCtrlI.String():
-			m.focusedModel = FocusMethodModel
-			m.response.border = StyleInactiveBorder
-			m.response.paginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
-			m.url.httpMethodPaginator.ActiveDot = StyleActivePageOnPaginator
-			return m, nil
+      return m.focusOnMethod()
 		case tea.KeyCtrlU.String():
-			m.url.textInput.Cursor.SetMode(cursor.CursorBlink)
-			m.request.body.Cursor.SetMode(cursor.CursorHide)
-			m.request.headers.Cursor.SetMode(cursor.CursorHide)
-			m.response.border = StyleInactiveBorder
-			m.response.paginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
-			m.url.httpMethodPaginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
-			m.focusedModel = FocusUrlModel
-			return m, nil
+      return m.focudOnUrl()
 		case tea.KeyCtrlB.String():
-			m.request.body.Cursor.SetMode(cursor.CursorBlink)
-			m.url.textInput.Cursor.SetMode(cursor.CursorHide)
-			m.request.headers.Cursor.SetMode(cursor.CursorHide)
-			m.response.border = StyleInactiveBorder
-			m.response.paginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
-			m.url.httpMethodPaginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
-			m.request.body.Cursor.Focus()
-			m.focusedModel = FocusRequestBodyModel
-			return m, nil
+      return m.focusOnRequestBody()
 		case tea.KeyCtrlR.String():
-			m.request.headers.Cursor.SetMode(cursor.CursorBlink)
-			m.url.textInput.Cursor.SetMode(cursor.CursorHide)
-			m.request.body.Cursor.SetMode(cursor.CursorHide)
-			m.request.headers.Cursor.Focus()
-			m.response.border = StyleInactiveBorder
-			m.response.paginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
-			m.url.httpMethodPaginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
-			m.focusedModel = FocusRequestHeaderModel
-			return m, nil
+      return m.focusOnRequestHeader()
 		case tea.KeyCtrlS.String():
-			m.url.textInput.Cursor.SetMode(cursor.CursorHide)
-			m.request.body.Cursor.SetMode(cursor.CursorHide)
-			m.request.headers.Cursor.SetMode(cursor.CursorHide)
-			m.response.border = StyleResponseBorder
-			m.response.paginator.ActiveDot = StyleActivePageOnPaginator
-			m.url.httpMethodPaginator.ActiveDot = StyleInactivecCurrentPageOnPaginator
-			m.focusedModel = FocusResponseModel
-			return m, nil
+      return m.focusOnResponse()
 		default:
 			// Handling each focused model
 			switch m.focusedModel {
