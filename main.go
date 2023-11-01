@@ -193,55 +193,14 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
       return m.focusOnResponse()
 		default:
 			// Handling each focused model
-			switch m.focusedModel {
-			// Updating the URL
-			case FocusUrlModel:
-				m.url.textInput, _ = m.url.textInput.Update(msg)
-				return m, nil
-			case FocusMethodModel:
-				// Update the http method model
-				m.url.httpMethodPaginator, _ = m.url.httpMethodPaginator.Update(msg)
-				currentPage := m.url.httpMethodPaginator.Page
-				m.url.chosenMethod = httpMethod(currentPage)
-				return m, nil
-			case FocusRequestBodyModel:
-				// Now change the focus to the request body textarea
-				m.request.body.Focus()
-				m.request.body, _ = m.request.body.Update(msg)
-				return m, nil
-			case FocusRequestHeaderModel:
-				// Now change the focus to the request headers textarea
-				m.request.headers.Focus()
-				m.request.headers, _ = m.request.headers.Update(msg)
-				return m, nil
-			case FocusResponseModel:
-				var currentPage int = m.response.paginator.Page
-				switch msg.String() {
-				case tea.KeyLeft.String(), tea.KeyRight.String(), "l", "h":
-					m.response.paginator, _ = m.response.paginator.Update(msg)
-					return m, nil
-				// If the user types `ctrl+a` while focus on the response body, the viewport goes to the top
-				case tea.KeyCtrlA.String():
-					if currentPage == 0 {
-						m.response.body.GotoTop()
-					}
-					return m, nil
-				// If the user types `ctrl+e` while focus on the response body, the viewport goes to the bottom
-				case tea.KeyCtrlE.String():
-					if currentPage == 0 {
-						m.response.body.GotoBottom()
-					}
-					return m, nil
-				default:
-					var cmd tea.Cmd
-					if currentPage == 0 {
-						m.response.body, cmd = m.response.body.Update(msg)
-					} else {
-						m.response.headers, cmd = m.response.headers.Update(msg)
-					}
-					return m, cmd
-				}
-			}
+      var focusHandler = map[FocusedModel]func(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+        FocusUrlModel: m.updateUrlModel,
+        FocusMethodModel: m.updateMethodModel,
+        FocusRequestBodyModel: m.updateRequestBodyModel,
+        FocusRequestHeaderModel: m.updateRequestHeaderModel,
+        FocusResponseModel: m.updateResponseModel,
+      }
+      return focusHandler[m.focusedModel](msg)
 		}
 	}
 	return m, nil
