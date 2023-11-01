@@ -17,6 +17,14 @@ var (
 	err                error
 )
 
+
+type RequestStruct struct {
+  url           string
+  chosenMethod  httpMethod
+  byteRequestBody      *bytes.Buffer
+  byteRequestHeader    []byte
+}
+
 type Response struct {
 	rawResponse string
 	body        string
@@ -24,8 +32,8 @@ type Response struct {
 	statusCode  int
 }
 
-func handleGetMethod(url string) (*Response, error) {
-	request, err = http.NewRequest(GET.String(), url, nil)
+func handleGetMethod(requestS RequestStruct) (*Response, error) {
+	request, err = http.NewRequest(GET.String(), requestS.url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -63,13 +71,13 @@ func handleGetMethod(url string) (*Response, error) {
 	return newResponse, nil
 }
 
-func handlePostMethod(url string, body io.Reader, headers []byte) (*Response, error) {
-	request, err = http.NewRequest(POST.String(), url, body)
+func handlePostMethod(requestS RequestStruct) (*Response, error) {
+	request, err = http.NewRequest(POST.String(), requestS.url, requestS.byteRequestBody)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = json.Unmarshal(headers, &requestHeaders); err != nil {
+	if err = json.Unmarshal(requestS.byteRequestHeader, &requestHeaders); err != nil {
 		return nil, err
 	}
 
@@ -111,13 +119,13 @@ func handlePostMethod(url string, body io.Reader, headers []byte) (*Response, er
 	return newResponse, nil
 }
 
-func handlePutMethod(url string, body io.Reader, headers []byte) (*Response, error) {
-	request, err = http.NewRequest(PUT.String(), url, body)
+func handlePutMethod(requestS RequestStruct) (*Response, error) {
+	request, err = http.NewRequest(PUT.String(), requestS.url, requestS.byteRequestBody)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = json.Unmarshal(headers, &requestHeaders); err != nil {
+	if err = json.Unmarshal(requestS.byteRequestHeader, &requestHeaders); err != nil {
 		return nil, err
 	}
 
@@ -160,13 +168,13 @@ func handlePutMethod(url string, body io.Reader, headers []byte) (*Response, err
 	return newResponse, nil
 }
 
-func handleDeleteMethod(url string, headers []byte) (*Response, error) {
-	request, err = http.NewRequest(DELETE.String(), url, nil)
+func handleDeleteMethod(requestS RequestStruct) (*Response, error) {
+	request, err = http.NewRequest(DELETE.String(), requestS.url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = json.Unmarshal(headers, &requestHeaders); err != nil {
+	if err = json.Unmarshal(requestS.byteRequestHeader, &requestHeaders); err != nil {
 		return nil, err
 	}
 
