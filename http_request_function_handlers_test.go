@@ -34,7 +34,7 @@ func TestHandleGetMethod(t *testing.T) {
 	)
 	defer newServer.Close()
   newMockedRequestStruct := mockReturnRequestStruct(newServer.URL, GET)
-	response, _ := handleGetMethod(newMockedRequestStruct)
+	response, _ := handleRequest(newMockedRequestStruct)
 	if response.rawResponse != expectedResponse {
 		t.Errorf("Expected response to be %s got %s", expectedResponse, response.rawResponse)
 	}
@@ -55,7 +55,7 @@ func TestHandlePostMethod(t *testing.T) {
 	)
 	defer newServer.Close()
   newMockedRequestStruct := mockReturnRequestStruct(newServer.URL, POST)
-	response, err := handlePostMethod(newMockedRequestStruct)
+	response, err := handleRequest(newMockedRequestStruct)
 	if err != nil {
 		t.Errorf("POST request failed: %s", err)
 		return
@@ -80,7 +80,7 @@ func TestHandlePutMethod(t *testing.T) {
 	)
 	defer newServer.Close()
   newMockedRequestStruct := mockReturnRequestStruct(newServer.URL, PUT)
-	response, err := handlePutMethod(newMockedRequestStruct)
+	response, err := handleRequest(newMockedRequestStruct)
 	if err != nil {
 		t.Errorf("PUT request failed: %s", err)
 		return
@@ -105,7 +105,7 @@ func TestHandleDeleteMethod(t *testing.T) {
 	)
 	defer newServer.Close()
   newMockedRequestStruct := mockReturnRequestStruct(newServer.URL, DELETE)
-	response, err := handleDeleteMethod(newMockedRequestStruct)
+	response, err := handleRequest(newMockedRequestStruct)
 	if err != nil {
 		t.Errorf("Delete request failed: %s", err)
 		return
