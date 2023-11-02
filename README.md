@@ -8,6 +8,8 @@
 
 # Features
 ![image](https://github.com/vitor-augusto1/tgorq/assets/121441594/c290a816-6a2d-4f6d-9066-bcbfdfe9f8de)
+![tgorq](https://github.com/vitor-augusto1/tgorq/assets/121441594/876512df-03bc-46fc-87f7-6e3a77a36a39)
+
 * Move with keyboard short-cuts
 * Lightweight
 * Fast
